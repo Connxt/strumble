@@ -1,0 +1,20 @@
+<ion-pane>
+	<ion-header-bar class="bar-positive" ng-controller="HeaderController">
+		<div class="buttons">
+			<button class="button button-icon icon ion-ios-arrow-back" ng-click="goBack()"></button>
+		</div>
+		<h1 class="title">Time Entry Details</h1>
+	</ion-header-bar>
+
+	<ion-content class="has-header" ng-controller="TimeEntryDetailsController">
+		<div class="list card">
+			<ion-item><strong>Client Name:</strong> {{ timeEntry.clientName  || "..."  }}</ion-item>
+			<ion-item><strong>Sent As:</strong> <strong ng-class="(timeEntry.status == TIME_ENTRY_STATUSES.final) ? 'balanced' : 'energized'">{{ timeEntry.status }}</strong></ion-item>
+			<ion-item><strong>Date Sent:</strong> {{ timeEntry.dateSent }}</ion-item>
+			<ion-item><strong>Length:</strong> {{ (timeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (timeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (timeEntry.seconds | fixedNumLength:2) }}</ion-item>
+			<ion-item><strong>Matter:</strong> {{ timeEntry.matter  || "..."  }}</ion-item>
+			<ion-item><strong>Phase:</strong> {{ timeEntry.phase  || "..."  }}</ion-item>
+			<ion-item><strong>Narration:</strong> {{ timeEntry.narration  || "..."  }}</ion-item>
+		</div>
+	</ion-content>
+</ion-pane>

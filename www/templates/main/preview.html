@@ -1,0 +1,16 @@
+<ion-modal-view>
+	<ion-header-bar>
+		<button class="button button-clear button-positive" ng-click="closePreviewModal()">Close</button>
+		<h1 class="title">My Modal title</h1>
+		<button class="button button-clear button-positive" ng-click="send(false)">Send</button>
+	</ion-header-bar>
+	<ion-content>
+		<div class="list card">
+			<ion-item><strong>Client Name:</strong> {{ currentTimeEntry.clientName || "..." }}</ion-item>
+			<ion-item><strong>Length:</strong> {{ (currentTimeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (currentTimeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (currentTimeEntry.seconds | fixedNumLength:2) }}</ion-item>
+			<ion-item><strong>Matter:</strong> {{ currentTimeEntry.matter || "..." }}</ion-item>
+			<ion-item><strong>Phase:</strong> {{ currentTimeEntry.phase || "..." }}</ion-item>
+			<ion-item><strong>Narration:</strong> {{ currentTimeEntry.narration || "..." }}</ion-item>
+		</div>
+	</ion-content>
+</ion-modal-view>

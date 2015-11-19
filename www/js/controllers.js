@@ -1,5 +1,5 @@
 app.controller("HeaderController", function ($scope, $state, $ionicPopover, $ionicHistory, APP_STATES) {
-	$scope.appStates = APP_STATES;
+	$scope.APP_STATES = APP_STATES;
 
 	$ionicPopover.fromTemplateUrl("templates/main/popover.html", {
 		scope: $scope
@@ -25,12 +25,13 @@ app.controller("HeaderController", function ($scope, $state, $ionicPopover, $ion
 	});
 });
 
-app.controller("TimerController", function ($scope, $state, $interval, APP_STATES, TimeEntries, Settings, CurrentTimeEntry) {
+app.controller("TimerController", function ($scope, $state, $stateParams, $interval, APP_STATES, TimeEntries, Settings, CurrentTimeEntry) {
 	var timer,
 		settings = Settings.get();
 
-	$scope.appStates = APP_STATES;
+	$scope.APP_STATES = APP_STATES;
 	$scope.currentTimeEntry = CurrentTimeEntry.get();
+	$scope.milliseconds = 0;
 
 	$scope.$watch("currentTimeEntry", function (newValue, oldValue) {
 		CurrentTimeEntry.set(newValue);
@@ -76,11 +77,11 @@ app.controller("TimerController", function ($scope, $state, $interval, APP_STATE
 			$scope.isPlaying = true;
 
 			timer = $interval(function () {
-				$scope.currentTimeEntry.milliseconds += 100;
+				$scope.milliseconds += 100;
 
-				if($scope.currentTimeEntry.milliseconds >= 1000) {
+				if($scope.milliseconds >= 1000) {
 					$scope.currentTimeEntry.seconds++;
-					$scope.currentTimeEntry.milliseconds = 0;
+					$scope.milliseconds = 0;
 				}
 
 				if($scope.currentTimeEntry.seconds >= 60) {
@@ -103,7 +104,7 @@ app.controller("TimerController", function ($scope, $state, $interval, APP_STATE
 		$scope.currentTimeEntry.hours = 0;
 		$scope.currentTimeEntry.minutes = 0;
 		$scope.currentTimeEntry.seconds = 0;
-		$scope.currentTimeEntry.milliseconds = 0;
+		$scope.milliseconds = 0;
 	};
 
 	$scope.goToMoreInfo = function () {
@@ -111,43 +112,98 @@ app.controller("TimerController", function ($scope, $state, $interval, APP_STATE
 	};
 });
 
-app.controller("MoreInfoController", function ($scope, CurrentTimeEntry) {
+app.controller("MoreInfoController", function ($scope, $stateParams, CurrentTimeEntry) {
 	$scope.currentTimeEntry = CurrentTimeEntry.get();
 
 	$scope.$watch("currentTimeEntry", function (newValue, oldValue) {
 		CurrentTimeEntry.set(newValue);
 		$scope.currentTimeEntry = CurrentTimeEntry.get();
-		console.log(CurrentTimeEntry.get());
 	}, true);
 });
 
-app.controller("SendController", function ($scope, $state, $ionicActionSheet, APP_STATES, TIME_ENTRY_STATUSES, TimeEntries, CurrentTimeEntry, Settings) {
-	$scope.show = function () {
-		var hideSheet = $ionicActionSheet.show({
-			buttons: [
-				{ text: "Send as final" },
-				{ text: "Send as draft" },
-			],
+app.controller("SendController", function ($scope, $state, $ionicActionSheet, $ionicPopup, $ionicModal, APP_STATES, TIME_ENTRY_STATUSES, TimeEntries, CurrentTimeEntry, Settings) {
+	$scope.currentTimeEntry = CurrentTimeEntry.get();
+
+	$ionicModal.fromTemplateUrl("templates/main/preview.html", {
+		scope: $scope,
+		animation: "slide-in-up"
+	}).then(function (modal) {
+		$scope.previewModal = modal;
+	});
+
+	$scope.preview = function () {
+		var settings = Settings.get(),
+			errors = [],
+			errorMessage = "";
+
+		if(settings.recipientEmail === undefined) {
+			errors.push("Recipient Email");
+		}
+
+		if(settings.myEmail === undefined || settings.myEmailPassword === undefined) {
+			errors.push("My Email");
+		}
+
+		if(errors.length >= 1) {
+			for(var i = 0; i < errors.length; i++) {
+				errorMessage += "<h5><i class='ion-ios-checkmark-empty'></i> " + errors[i] + "</h5>";
+			}
+
+			$ionicPopup.alert({
+				title: "Error",
+				subTitle: "Please go to the settings and set the following:",
+				template: errorMessage
+			});
+		}
+		else {
+			$scope.previewModal.show();
+		}
+	};
+
+	$scope.closePreviewModal = function () {
+		$scope.previewModal.hide();
+	};
+
+	$scope.send = function (withPreview) {
+		var actionSheetButtons = [{
+				text: "Send as final"
+			}, {
+				text: "Send as draft"
+			}];
+
+		if(withPreview) {
+			actionSheetButtons.push({ text: "Preview" });
+		}
+
+		$ionicActionSheet.show({
+			buttons: actionSheetButtons,
 			titleText: "Sending Options",
 			cancelText: "Cancel",
 			buttonClicked: function (index) {
-				var settings = Settings.get(),
-					currentTimeEntry = CurrentTimeEntry.get();
+				var settings = Settings.get()
 
 				if(index == 0) {
-					currentTimeEntry.status = TIME_ENTRY_STATUSES.final;
+					$scope.currentTimeEntry.status = TIME_ENTRY_STATUSES.final;
 				}
 				else if(index == 1) {
-					currentTimeEntry.status = TIME_ENTRY_STATUSES.draft;
+					$scope.currentTimeEntry.status = TIME_ENTRY_STATUSES.draft;
 				}
-	
-				if(index >= 0) {
-					$state.go(APP_STATES.main);
-					currentTimeEntry.recipientEmail = settings.recipientEmail;
-					currentTimeEntry.dateSent = Date();
+				else if(index == 2) {
+					$scope.preview();
+				}
 
-					TimeEntries.add(currentTimeEntry);
-				}	
+				if(index < 2) {
+					$scope.currentTimeEntry.recipientEmail = settings.recipientEmail;
+					$scope.currentTimeEntry.dateSent = Date();
+
+					TimeEntries.add($scope.currentTimeEntry);
+
+					$scope.currentTimeEntry = {};
+					CurrentTimeEntry.set($scope.currentTimeEntry);
+
+					$scope.previewModal.hide();
+					$state.go(APP_STATES.main);
+				}
 
 				return true;
 			}
@@ -155,20 +211,18 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, AP
 	};
 });
 
-app.controller("TimeEntryListController", function ($scope, TimeEntries, $ionicPopup) {
+app.controller("TimeEntryListController", function ($scope, $state, TimeEntries, TIME_ENTRY_STATUSES, APP_STATES) {
 	$scope.timeEntries = TimeEntries.getAll();
+	$scope.TIME_ENTRY_STATUSES = TIME_ENTRY_STATUSES;
+	
+	$scope.showDetails = function (timeEntryId) {
+		$state.go(APP_STATES.timeEntryDetails, { timeEntryId: timeEntryId });
+	}
+});
 
-	$scope.showAlert = function() {
-		var alertPopup = $ionicPopup.alert({
-			title: 'Don\'t eat that!',
-			template: 'It might taste good'
-		});
-
-		alertPopup.then(function(res) {
-			console.log('Thank you for not eating my delicious ice cream cone');
-		});
-
-	};
+app.controller("TimeEntryDetailsController", function ($scope, $stateParams, TimeEntries, TIME_ENTRY_STATUSES) {
+	$scope.timeEntry = TimeEntries.get($stateParams.timeEntryId);
+	$scope.TIME_ENTRY_STATUSES = TIME_ENTRY_STATUSES;
 });
 
 app.controller("SettingsController", function ($scope, $ionicPopup, Settings) {
@@ -206,7 +260,7 @@ app.controller("SettingsController", function ($scope, $ionicPopup, Settings) {
 
 	$scope.setMyEmail = function () {
 		$ionicPopup.show({
-			template: 
+			template:
 				"<label class='item item-input'>" +
 				"	<input type='email' ng-model='tempSettings.myEmail' placeholder='sample_email@domain.com' autofocus/>" +
 				"</label>" +

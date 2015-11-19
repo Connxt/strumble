@@ -13,10 +13,10 @@ app.factory("TimeEntries", function () {
 	self.get = function (index) {
 		var timeEntries = window.localStorage["timeEntries"];
 		if(timeEntries) {
-			return angular.fromJson(timeEntries[index]);
+			return angular.fromJson(timeEntries)[index];
 		}
 
-		return [];
+		return {};
 	}
 
 	/**

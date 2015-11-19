@@ -24,7 +24,8 @@ app.constant("APP_STATES", {
 	moreInfo: "app.more-info",
 	settings: "app.settings",
 	stats: "app.stats",
-	timeEntryList: "app.time-entry-list"
+	timeEntryList: "app.time-entry-list",
+	timeEntryDetails: "app.time-entry-details"
 });
 
 app.constant("TIME_ENTRY_STATUSES", {
@@ -75,7 +76,16 @@ app.config(function ($stateProvider, $urlRouterProvider, APP_STATES) {
 		url: "/time-entry-list",
 		views: {
 			"main": {
-				templateUrl: "templates/time-entry-list.html"
+				templateUrl: "templates/time-entry-list/index.html"
+			}
+		}
+	})
+	.state(APP_STATES.timeEntryDetails, {
+		url: "/time-entry-details/:timeEntryId",
+		views: {
+			"main": {
+				templateUrl: "templates/time-entry-list/details.html",
+				controller: "TimeEntryDetailsController"
 			}
 		}
 	});

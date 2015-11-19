@@ -41,6 +41,7 @@ app.config(function ($stateProvider, $urlRouterProvider, APP_STATES) {
 		templateUrl: "templates/app.html"
 	})
 	.state(APP_STATES.main, {
+		cache: false,
 		url: "/main",
 		views: {
 			"main": {

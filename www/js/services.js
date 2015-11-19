@@ -2,7 +2,7 @@ app.factory("TimeEntries", function () {
 	var self = this;
 
 	self.getAll = function () {
-		var timeEntries = window.localStorage["timeEntries"];
+		var timeEntries = window.localStorage["strumble.timeEntries"];
 		if(timeEntries) {
 			return angular.fromJson(timeEntries);
 		}
@@ -11,7 +11,7 @@ app.factory("TimeEntries", function () {
 	};
 
 	self.get = function (index) {
-		var timeEntries = window.localStorage["timeEntries"];
+		var timeEntries = window.localStorage["strumble.timeEntries"];
 		if(timeEntries) {
 			return angular.fromJson(timeEntries)[index];
 		}
@@ -33,7 +33,7 @@ app.factory("TimeEntries", function () {
 	 * @param {time} timeEntry.timeSent
 	 */
 	self.add = function (timeEntry) {
-		var timeEntries = window.localStorage["timeEntries"];
+		var timeEntries = window.localStorage["strumble.timeEntries"];
 
 		if(timeEntries) {
 			timeEntries = angular.fromJson(timeEntries);
@@ -43,7 +43,7 @@ app.factory("TimeEntries", function () {
 		}
 
 		timeEntries.push(timeEntry);
-		window.localStorage["timeEntries"] = angular.toJson(timeEntries);
+		window.localStorage["strumble.timeEntries"] = angular.toJson(timeEntries);
 	};
 
 	return self;
@@ -52,9 +52,16 @@ app.factory("TimeEntries", function () {
 app.factory("CurrentTimeEntry", function () {
 	var self = this,
 		currentTimeEntry = {};
+	// var self = this;
 
 	self.get = function () {
 		return currentTimeEntry;
+		// var currentTimeEntry = window.localStorage["strumble.currentTimeEntry"];
+		// if(currentTimeEntry) {
+		// 	return angular.fromJson(currentTimeEntry);
+		// }
+
+		// return {};
 	};
 
 	/**
@@ -69,6 +76,12 @@ app.factory("CurrentTimeEntry", function () {
 	 */
 	self.set = function (timeEntry) {
 		currentTimeEntry = timeEntry;
+		// window.localStorage["strumble.currentTimeEntry"] = angular.toJson(timeEntry);
+	};
+
+	self.clear = function () {
+		currentTimeEntry = {};
+		// window.localStorage["strumble.currentTimeEntry"] = angular.toJson({});
 	};
 
 	return self;
@@ -78,7 +91,7 @@ app.factory("Settings", function () {
 	var self = this;
 
 	self.get = function () {
-		var settings = window.localStorage["settings"];
+		var settings = window.localStorage["strumble.settings"];
 		if(settings) {
 			return angular.fromJson(settings);
 		}
@@ -94,7 +107,7 @@ app.factory("Settings", function () {
 	 * @param {number} settings.minutesPerUnit
 	 */
 	self.set = function (settings) {
-		window.localStorage["settings"] = angular.toJson(settings);
+		window.localStorage["strumble.settings"] = angular.toJson(settings);
 	};
 
 	return self;

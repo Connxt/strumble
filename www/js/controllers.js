@@ -25,10 +25,10 @@ app.controller("HeaderController", function ($scope, $state, $ionicPopover, $ion
 	});
 });
 
-app.controller("TimerController", function ($scope, $state, $stateParams, $interval, APP_STATES, TimeEntries, Settings, CurrentTimeEntry) {
+app.controller("TimerController", function ($scope, $rootScope, $state, $stateParams, $interval, APP_STATES, TimeEntries, Settings, CurrentTimeEntry) {
 	var timer,
 		settings = Settings.get();
-
+	$rootScope.test = "asd";
 	$scope.APP_STATES = APP_STATES;
 	$scope.currentTimeEntry = CurrentTimeEntry.get();
 	$scope.milliseconds = 0;
@@ -58,6 +58,9 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 			Settings.set(settings);
 
 			$scope.currentTimeEntry.isTimerMode = false;
+		}
+		else {
+			$scope.currentTimeEntry.isTimerMode = settings.timerModeAsDefault;
 		}
 	}
 
@@ -106,13 +109,9 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 		$scope.currentTimeEntry.seconds = 0;
 		$scope.milliseconds = 0;
 	};
-
-	$scope.goToMoreInfo = function () {
-		$state.go($scope.appStates.moreInfo);
-	};
 });
 
-app.controller("MoreInfoController", function ($scope, $stateParams, CurrentTimeEntry) {
+app.controller("MoreInfoController", function ($scope, $rootScope, CurrentTimeEntry) {
 	$scope.currentTimeEntry = CurrentTimeEntry.get();
 
 	$scope.$watch("currentTimeEntry", function (newValue, oldValue) {
@@ -121,7 +120,7 @@ app.controller("MoreInfoController", function ($scope, $stateParams, CurrentTime
 	}, true);
 });
 
-app.controller("SendController", function ($scope, $state, $ionicActionSheet, $ionicPopup, $ionicModal, APP_STATES, TIME_ENTRY_STATUSES, TimeEntries, CurrentTimeEntry, Settings) {
+app.controller("SendController", function ($scope, $rootScope, $state, $ionicActionSheet, $ionicPopup, $ionicModal, APP_STATES, TIME_ENTRY_STATUSES, TimeEntries, CurrentTimeEntry, Settings) {
 	$scope.currentTimeEntry = CurrentTimeEntry.get();
 
 	$ionicModal.fromTemplateUrl("templates/main/preview.html", {
@@ -136,6 +135,14 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 			errors = [],
 			errorMessage = "";
 
+		$scope.previewModal.show();
+	};
+
+	$scope.closePreviewModal = function () {
+		$scope.previewModal.hide();
+	};
+
+	$scope.send = function (withPreview) {
 		if(settings.recipientEmail === undefined) {
 			errors.push("Recipient Email");
 		}
@@ -156,65 +163,57 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 			});
 		}
 		else {
-			$scope.previewModal.show();
-		}
-	};
+			var actionSheetButtons = [{
+					text: "Send as final"
+				}, {
+					text: "Send as draft"
+				}];
 
-	$scope.closePreviewModal = function () {
-		$scope.previewModal.hide();
-	};
-
-	$scope.send = function (withPreview) {
-		var actionSheetButtons = [{
-				text: "Send as final"
-			}, {
-				text: "Send as draft"
-			}];
-
-		if(withPreview) {
-			actionSheetButtons.push({ text: "Preview" });
-		}
-
-		$ionicActionSheet.show({
-			buttons: actionSheetButtons,
-			titleText: "Sending Options",
-			cancelText: "Cancel",
-			buttonClicked: function (index) {
-				var settings = Settings.get()
-
-				if(index == 0) {
-					$scope.currentTimeEntry.status = TIME_ENTRY_STATUSES.final;
-				}
-				else if(index == 1) {
-					$scope.currentTimeEntry.status = TIME_ENTRY_STATUSES.draft;
-				}
-				else if(index == 2) {
-					$scope.preview();
-				}
-
-				if(index < 2) {
-					$scope.currentTimeEntry.recipientEmail = settings.recipientEmail;
-					$scope.currentTimeEntry.dateSent = Date();
-
-					TimeEntries.add($scope.currentTimeEntry);
-
-					$scope.currentTimeEntry = {};
-					CurrentTimeEntry.set($scope.currentTimeEntry);
-
-					$scope.previewModal.hide();
-					$state.go(APP_STATES.main);
-				}
-
-				return true;
+			if(withPreview) {
+				actionSheetButtons.push({ text: "Preview" });
 			}
-		});
+
+			$ionicActionSheet.show({
+				buttons: actionSheetButtons,
+				titleText: "Sending Options",
+				cancelText: "Cancel",
+				buttonClicked: function (index) {
+					var settings = Settings.get()
+
+					if(index == 0) {
+						$scope.currentTimeEntry.status = TIME_ENTRY_STATUSES.final;
+					}
+					else if(index == 1) {
+						$scope.currentTimeEntry.status = TIME_ENTRY_STATUSES.draft;
+					}
+					else if(index == 2) {
+						$scope.preview();
+					}
+
+					if(index < 2) {
+						$scope.currentTimeEntry.recipientEmail = settings.recipientEmail;
+						$scope.currentTimeEntry.dateSent = Date();
+
+						TimeEntries.add($scope.currentTimeEntry);
+
+						$scope.currentTimeEntry = {};
+						CurrentTimeEntry.clear();
+
+						$scope.previewModal.hide();
+						$state.go(APP_STATES.main);
+					}
+
+					return true;
+				}
+			});
+		}
 	};
 });
 
 app.controller("TimeEntryListController", function ($scope, $state, TimeEntries, TIME_ENTRY_STATUSES, APP_STATES) {
 	$scope.timeEntries = TimeEntries.getAll();
 	$scope.TIME_ENTRY_STATUSES = TIME_ENTRY_STATUSES;
-	
+
 	$scope.showDetails = function (timeEntryId) {
 		$state.go(APP_STATES.timeEntryDetails, { timeEntryId: timeEntryId });
 	}
@@ -227,8 +226,9 @@ app.controller("TimeEntryDetailsController", function ($scope, $stateParams, Tim
 
 app.controller("SettingsController", function ($scope, $ionicPopup, Settings) {
 	$scope.settings = Settings.get();
-	$scope.tempSettings = {};
-	angular.copy($scope.settings, $scope.tempSettings);
+	$scope.tempSettings = Settings.get();
+	// $scope.tempSettings = {};
+	// angular.copy($scope.settings, $scope.tempSettings);
 
 	$scope.setRecipientEmail = function () {
 		$ionicPopup.show({

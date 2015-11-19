@@ -243,7 +243,7 @@ app.factory("CurrentTimeEntry", function () {
 	 * @param {String} timeEntry.matter
 	 * @param {String} timeEntry.phase
 	 * @param {String} timeEntry.narration
-	 * @param {String} timeEntry.mode [ 0 = manual mode, 1 = timer mode ]
+	 * @param {boolean} timeEntry.isTimerMode
 	 * @param {String} timeEntry.hours
 	 * @param {String} timeEntry.minutes
 	 * @param {String} timeEntry.seconds

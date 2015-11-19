@@ -29,25 +29,23 @@ app.controller("TimerController", function ($scope, $state, $interval, APP_STATE
 	var timer;
 
 	$scope.appStates = APP_STATES;
+	$scope.currentTimeEntry = CurrentTimeEntry.get();
 
 	// Timer States
-	$scope.mode = Settings.get().timerModeAsDefault;
+	$scope.currentTimeEntry.isTimerMode = Settings.get().timerModeAsDefault;
 	$scope.isPlaying = false;
 
 	// Timer Values
-	$scope.hours = 0;
-	$scope.minutes = 0;
-	$scope.seconds = 0;
-	$scope.milliseconds = 0;
+	$scope.currentTimeEntry.hours = 0;
+	$scope.currentTimeEntry.minutes = 0;
+	$scope.currentTimeEntry.seconds = 0;
+	$scope.currentTimeEntry.milliseconds = 0;
 
 	// Other Details
-	$scope.clientName = "";
-	$scope.matter = "";
-	$scope.phase = "";
-	$scope.narration = "";
+	$scope.currentTimeEntry.clientName = "";
 
 	$scope.toggleMode = function () {
-		if(!$scope.mode) {
+		if(!$scope.currentTimeEntry.isTimerMode) {
 			$scope.isPlaying = true;
 			$scope.toggleTimer($scope.isPlaying);
 		}
@@ -62,21 +60,21 @@ app.controller("TimerController", function ($scope, $state, $interval, APP_STATE
 			$scope.isPlaying = true;
 
 			timer = $interval(function () {
-				$scope.milliseconds += 100;
+				$scope.currentTimeEntry.milliseconds += 100;
 
-				if($scope.milliseconds >= 1000) {
-					$scope.seconds++;
-					$scope.milliseconds = 0;
+				if($scope.currentTimeEntry.milliseconds >= 1000) {
+					$scope.currentTimeEntry.seconds++;
+					$scope.currentTimeEntry.milliseconds = 0;
 				}
 
-				if($scope.seconds >= 60) {
-					$scope.minutes++;
-					$scope.seconds = 0;
+				if($scope.currentTimeEntry.seconds >= 60) {
+					$scope.currentTimeEntry.minutes++;
+					$scope.currentTimeEntry.seconds = 0;
 				}
 
-				if($scope.minutes >= 60) {
-					$scope.hours++;
-					$scope.minutes = 0;
+				if($scope.currentTimeEntry.minutes >= 60) {
+					$scope.currentTimeEntry.hours++;
+					$scope.currentTimeEntry.minutes = 0;
 				}
 			}, 100);
 		}
@@ -86,16 +84,20 @@ app.controller("TimerController", function ($scope, $state, $interval, APP_STATE
 		$scope.isPlaying = true;
 		$scope.toggleTimer($scope.isPlaying);
 
-		$scope.hours = 0;
-		$scope.minutes = 0;
-		$scope.seconds = 0;
-		$scope.milliseconds = 0;
+		$scope.currentTimeEntry.hours = 0;
+		$scope.currentTimeEntry.minutes = 0;
+		$scope.currentTimeEntry.seconds = 0;
+		$scope.currentTimeEntry.milliseconds = 0;
 	};
 
 	$scope.validateTimerFields = function () {
-		$scope.hours = ($scope.hours === null || isNaN($scope.hours) || $scope.hours > 99) ? 0 : parseInt($scope.hours);
-		$scope.minutes = ($scope.minutes === null || isNaN($scope.minutes) || $scope.minutes > 60) ? 0 : parseInt($scope.minutes);
-		$scope.seconds = ($scope.seconds === null || isNaN($scope.seconds) || $scope.seconds > 60) ? 0 : parseInt($scope.seconds);
+		$scope.currentTimeEntry.hours = ($scope.currentTimeEntry.hours === null || isNaN($scope.currentTimeEntry.hours) || $scope.currentTimeEntry.hours > 99) ? 0 : parseInt($scope.currentTimeEntry.hours);
+		$scope.currentTimeEntry.minutes = ($scope.currentTimeEntry.minutes === null || isNaN($scope.currentTimeEntry.minutes) || $scope.currentTimeEntry.minutes > 60) ? 0 : parseInt($scope.currentTimeEntry.minutes);
+		$scope.currentTimeEntry.seconds = ($scope.currentTimeEntry.seconds === null || isNaN($scope.currentTimeEntry.seconds) || $scope.currentTimeEntry.seconds > 60) ? 0 : parseInt($scope.currentTimeEntry.seconds);
+	};
+
+	$scope.saveCurrentTimeEntry = function () {
+		
 	};
 
 	$scope.goToMoreInfo = function () {

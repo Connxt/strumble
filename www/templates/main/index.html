@@ -7,16 +7,16 @@
 	</ion-header-bar>
 
 	<ion-content class="has-header" ng-controller="TimerController">
-		<ion-toggle ng-model="mode" toggle-class="toggle-positive" ng-change="toggleMode()">Timer Mode</ion-toggle>
+		<ion-toggle ng-model="currentTimeEntry.isTimerMode" toggle-class="toggle-positive" ng-change="toggleMode()">Timer Mode</ion-toggle>
 		<div class="card" style="padding-bottom: 0px;">
 			<label class="item item-input item-stacked-label">
 				<span class="input-label">Client Name</span>
 				<input type="text" placeholder="...">
 			</label>
 
-			<div ng-show="mode" class="text-center">
+			<div ng-show="currentTimeEntry.isTimerMode" class="text-center">
 				<label class="item">
-					<div class="timer-display">{{ (hours | numberFixedLen:2) + &quot;:&quot; + (minutes | numberFixedLen:2)  + &quot;:&quot; + (seconds | numberFixedLen:2) }}</div>
+					<div class="timer-display">{{ (currentTimeEntry.hours | numberFixedLen:2) + &quot;:&quot; + (currentTimeEntry.minutes | numberFixedLen:2)  + &quot;:&quot; + (currentTimeEntry.seconds | numberFixedLen:2) }}</div>
 				</label>
 				<div class="button-bar">
 					<button class="button" ng-class="isPlaying ? &apos;button-assertive icon ion-pause&apos; : &apos;button-positive icon ion-play&apos;" ng-click="toggleTimer(isPlaying)"></button>
@@ -24,18 +24,18 @@
 				</div>
 			</div>
 
-			<div ng-hide="mode">
+			<div ng-hide="currentTimeEntry.isTimerMode">
 				<label class="item item-input">
 					<span class="input-label">Hours</span>
-					<input type="number" placeholder="00" ng-model="hours" ng-change="validateTimer()" />
+					<input type="number" placeholder="00" ng-model="currentTimeEntry.hours" ng-change="validateTimer()" />
 				</label>
 				<label class="item item-input">
 					<span class="input-label">Minutes</span>
-					<input type="number" placeholder="00" ng-model="minutes" ng-change="validateTimer()" />
+					<input type="number" placeholder="00" ng-model="currentTimeEntry.minutes" ng-change="validateTimer()" />
 				</label>
 				<label class="item item-input">
 					<span class="input-label">Seconds</span>
-					<input type="number" placeholder="00" ng-model="seconds" ng-change="validateTimer()" />
+					<input type="number" placeholder="00" ng-model="currentTimeEntry.seconds" ng-change="validateTimer()" />
 				</label>
 			</div>
 		</div>

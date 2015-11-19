@@ -21,7 +21,7 @@
 			</a>
 		</div>
  -->
-		<div class="list card">
+		<div class="list card" ng-show="timeEntries.length">
 			<a class="item item-icon-right" ng-repeat="timeEntry in timeEntries" ng-click="showDetails($index)">
 				<h2><strong>{{ timeEntry.clientName || "..." }}</strong> - <strong ng-class="(timeEntry.status == TIME_ENTRY_STATUSES.final) ? 'balanced' : 'energized'">{{ timeEntry.status }}</strong></h2>
 				<span class="item-note">{{ (timeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (timeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (timeEntry.seconds | fixedNumLength:2) }}</span>

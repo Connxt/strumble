@@ -12,15 +12,15 @@
 				<h2>Recipient Email</h2>
 				<p>{{ settings.recipientEmail || "..."}}</p>
 			</ion-item>
-			<ion-item ng-click="setMyEmail()">
+			<!-- <ion-item ng-click="setMyEmail()">
 				<h2>My Email</h2>
 				<p>{{ settings.myEmail || "..."}}</p>
-			</ion-item>
+			</ion-item> -->
 			<ion-toggle ng-model="tempSettings.timerModeAsDefault" toggle-class="toggle-positive" ng-change="setDefaultMode()">Timer Mode As Default</ion-toggle>
-			<ion-item ng-click="setMinutesPerUnit()">
+			<!-- <ion-item ng-click="setMinutesPerUnit()">
 				<h2>Minutes per unit</h2>
 				<p>{{ settings.minutesPerUnit || "..."}}</p>
-			</ion-item>
+			</ion-item> -->
 		</div>
 	</ion-content>
 </ion-pane>

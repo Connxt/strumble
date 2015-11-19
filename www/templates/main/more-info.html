@@ -1,0 +1,27 @@
+<ion-pane>
+	<ion-header-bar class="bar-positive" ng-controller="HeaderController">
+		<div class="buttons">
+			<button class="button button-icon icon ion-ios-arrow-back" ng-click="goBack()"></button>
+		</div>
+		<h1 class="title">More Info</h1>
+	</ion-header-bar>
+
+	<ion-content class="has-header" ng-controller="TimerController as timerCtrl">
+		<label class="item item-input item-stacked-label">
+			<span class="input-label">Matter</span>
+			<input type="text" placeholder="..." ng-model="timerCtrl.matter" />
+		</label>
+		<label class="item item-input item-stacked-label">
+			<span class="input-label">Phase</span>
+			<input type="text" placeholder="..." ng-model="timerCtrl.phase" />
+		</label>
+		<label class="item item-input item-stacked-label">
+			<span class="input-label">Narration</span>
+			<textarea placeholder="..." ng-model="timerCtrl.narration" rows="10"></textarea>
+		</label>
+	</ion-content>
+
+	<div class="bar bar-footer bar-positive footer-button" ng-controller="SendController">
+		<button class="button button-full button-clear icon ion-ios-paperplane" ng-click="show()"> Send</button>
+	</div>
+</ion-pane>

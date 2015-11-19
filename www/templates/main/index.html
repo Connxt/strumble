@@ -1,0 +1,51 @@
+<ion-pane>
+	<ion-header-bar class="bar-positive" ng-controller="HeaderController">
+		<h1 class="title">Strumble</h1>
+		<div class="buttons">
+			<button class="button button-icon icon ion-ios-more-outline" ng-click="openPopover($event)"></button>
+		</div>
+	</ion-header-bar>
+
+	<ion-content class="has-header" ng-controller="TimerController">
+		<ion-toggle ng-model="mode" toggle-class="toggle-positive" ng-change="toggleMode()">Timer Mode</ion-toggle>
+		<div class="card" style="padding-bottom: 0px;">
+			<label class="item item-input item-stacked-label">
+				<span class="input-label">Client Name</span>
+				<input type="text" placeholder="...">
+			</label>
+
+			<div ng-show="mode" class="text-center">
+				<label class="item">
+					<div class="timer-display">{{ (hours | numberFixedLen:2) + &quot;:&quot; + (minutes | numberFixedLen:2)  + &quot;:&quot; + (seconds | numberFixedLen:2) }}</div>
+				</label>
+				<div class="button-bar">
+					<button class="button" ng-class="isPlaying ? &apos;button-assertive icon ion-pause&apos; : &apos;button-positive icon ion-play&apos;" ng-click="toggleTimer(isPlaying)"></button>
+					<button class="button button-stable icon ion-trash-b" ng-click="resetTimer()"></button>
+				</div>
+			</div>
+
+			<div ng-hide="mode">
+				<label class="item item-input">
+					<span class="input-label">Hours</span>
+					<input type="number" placeholder="00" ng-model="hours" ng-change="validateTimer()" />
+				</label>
+				<label class="item item-input">
+					<span class="input-label">Minutes</span>
+					<input type="number" placeholder="00" ng-model="minutes" ng-change="validateTimer()" />
+				</label>
+				<label class="item item-input">
+					<span class="input-label">Seconds</span>
+					<input type="number" placeholder="00" ng-model="seconds" ng-change="validateTimer()" />
+				</label>
+			</div>
+		</div>
+
+		<div class="card">
+			<a class="item item-icon-right" ui-sref="{{ appStates.moreInfo }}" >What are you doing? <i class="icon ion-ios-arrow-thin-right"></i></a>
+		</div>
+	</ion-content>
+
+	<div class="bar bar-footer bar-positive footer-button" ng-controller="SendController">
+		<button class="button button-full button-clear icon ion-ios-paperplane" ng-click="show()"> Send</button>
+	</div>
+</ion-pane>

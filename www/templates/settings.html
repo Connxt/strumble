@@ -1,0 +1,26 @@
+<ion-pane>
+	<ion-header-bar class="bar-positive" ng-controller="HeaderController">
+		<div class="buttons">
+			<button class="button button-icon icon ion-ios-arrow-back" ng-click="goBack()"></button>
+		</div>
+		<h1 class="title">Settings</h1>
+	</ion-header-bar>
+
+	<ion-content class="has-header" ng-controller="SettingsController">
+		<div class="list">
+			<ion-item ng-click="setRecipientEmail()">
+				<h2>Recipient Email</h2>
+				<p>{{ settings.recipientEmail || "..."}}</p>
+			</ion-item>
+			<ion-item ng-click="setMyEmail()">
+				<h2>My Email</h2>
+				<p>{{ settings.myEmail || "..."}}</p>
+			</ion-item>
+			<ion-toggle ng-model="tempSettings.timerModeAsDefault" toggle-class="toggle-positive" ng-change="setDefaultMode()">Timer Mode As Default</ion-toggle>
+			<ion-item ng-click="setMinutesPerUnit()">
+				<h2>Minutes per unit</h2>
+				<p>{{ settings.minutesPerUnit || "..."}}</p>
+			</ion-item>
+		</div>
+	</ion-content>
+</ion-pane>

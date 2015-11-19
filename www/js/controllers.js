@@ -26,23 +26,39 @@ app.controller("HeaderController", function ($scope, $state, $ionicPopover, $ion
 });
 
 app.controller("TimerController", function ($scope, $state, $interval, APP_STATES, TimeEntries, Settings, CurrentTimeEntry) {
-	var timer;
+	var timer,
+		settings = Settings.get();
 
 	$scope.appStates = APP_STATES;
 	$scope.currentTimeEntry = CurrentTimeEntry.get();
 
-	// Timer States
-	$scope.currentTimeEntry.isTimerMode = Settings.get().timerModeAsDefault;
+	$scope.$watch("currentTimeEntry", function (newValue, oldValue) {
+		CurrentTimeEntry.set(newValue);
+		$scope.currentTimeEntry = CurrentTimeEntry.get();
+	}, true);
+
+	$scope.$watch("currentTimeEntry.hours", function (newValue, oldValue) {
+		$scope.currentTimeEntry.hours = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > 99 || newValue < 0) ? 0 : parseInt(newValue);
+	});
+
+	$scope.$watch("currentTimeEntry.minutes", function (newValue, oldValue) {
+		$scope.currentTimeEntry.minutes = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > 60 || newValue < 0) ? 0 : parseInt(newValue);
+	});
+
+	$scope.$watch("currentTimeEntry.seconds", function (newValue, oldValue) {
+		$scope.currentTimeEntry.seconds = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > 60 || newValue < 0) ? 0 : parseInt(newValue);
+	});
+
 	$scope.isPlaying = false;
 
-	// Timer Values
-	$scope.currentTimeEntry.hours = 0;
-	$scope.currentTimeEntry.minutes = 0;
-	$scope.currentTimeEntry.seconds = 0;
-	$scope.currentTimeEntry.milliseconds = 0;
+	if($scope.currentTimeEntry.isTimerMode === undefined) {
+		if(settings.timerModeAsDefault === undefined) {
+			settings.timerModeAsDefault = false;
+			Settings.set(settings);
 
-	// Other Details
-	$scope.currentTimeEntry.clientName = "";
+			$scope.currentTimeEntry.isTimerMode = false;
+		}
+	}
 
 	$scope.toggleMode = function () {
 		if(!$scope.currentTimeEntry.isTimerMode) {
@@ -90,26 +106,22 @@ app.controller("TimerController", function ($scope, $state, $interval, APP_STATE
 		$scope.currentTimeEntry.milliseconds = 0;
 	};
 
-	$scope.validateTimerFields = function () {
-		$scope.currentTimeEntry.hours = ($scope.currentTimeEntry.hours === null || isNaN($scope.currentTimeEntry.hours) || $scope.currentTimeEntry.hours > 99) ? 0 : parseInt($scope.currentTimeEntry.hours);
-		$scope.currentTimeEntry.minutes = ($scope.currentTimeEntry.minutes === null || isNaN($scope.currentTimeEntry.minutes) || $scope.currentTimeEntry.minutes > 60) ? 0 : parseInt($scope.currentTimeEntry.minutes);
-		$scope.currentTimeEntry.seconds = ($scope.currentTimeEntry.seconds === null || isNaN($scope.currentTimeEntry.seconds) || $scope.currentTimeEntry.seconds > 60) ? 0 : parseInt($scope.currentTimeEntry.seconds);
-	};
-
-	$scope.saveCurrentTimeEntry = function () {
-		
-	};
-
 	$scope.goToMoreInfo = function () {
 		$state.go($scope.appStates.moreInfo);
 	};
 });
 
 app.controller("MoreInfoController", function ($scope, CurrentTimeEntry) {
+	$scope.currentTimeEntry = CurrentTimeEntry.get();
 
+	$scope.$watch("currentTimeEntry", function (newValue, oldValue) {
+		CurrentTimeEntry.set(newValue);
+		$scope.currentTimeEntry = CurrentTimeEntry.get();
+		console.log(CurrentTimeEntry.get());
+	}, true);
 });
 
-app.controller("SendController", function ($scope, $state, $ionicActionSheet, APP_STATES, TimeEntries) {
+app.controller("SendController", function ($scope, $state, $ionicActionSheet, APP_STATES, TIME_ENTRY_STATUSES, TimeEntries, CurrentTimeEntry, Settings) {
 	$scope.show = function () {
 		var hideSheet = $ionicActionSheet.show({
 			buttons: [
@@ -119,12 +131,23 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, AP
 			titleText: "Sending Options",
 			cancelText: "Cancel",
 			buttonClicked: function (index) {
+				var settings = Settings.get(),
+					currentTimeEntry = CurrentTimeEntry.get();
+
 				if(index == 0) {
-					$state.go(APP_STATES.main);
+					currentTimeEntry.status = TIME_ENTRY_STATUSES.final;
 				}
 				else if(index == 1) {
-					$state.go(APP_STATES.main);
+					currentTimeEntry.status = TIME_ENTRY_STATUSES.draft;
 				}
+	
+				if(index >= 0) {
+					$state.go(APP_STATES.main);
+					currentTimeEntry.recipientEmail = settings.recipientEmail;
+					currentTimeEntry.dateSent = Date();
+
+					TimeEntries.add(currentTimeEntry);
+				}	
 
 				return true;
 			}
@@ -132,8 +155,20 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, AP
 	};
 });
 
-app.controller("TimeEntryListController", function ($scope, TimeEntries) {
+app.controller("TimeEntryListController", function ($scope, TimeEntries, $ionicPopup) {
 	$scope.timeEntries = TimeEntries.getAll();
+
+	$scope.showAlert = function() {
+		var alertPopup = $ionicPopup.alert({
+			title: 'Don\'t eat that!',
+			template: 'It might taste good'
+		});
+
+		alertPopup.then(function(res) {
+			console.log('Thank you for not eating my delicious ice cream cone');
+		});
+
+	};
 });
 
 app.controller("SettingsController", function ($scope, $ionicPopup, Settings) {

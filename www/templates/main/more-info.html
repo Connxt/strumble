@@ -6,18 +6,18 @@
 		<h1 class="title">More Info</h1>
 	</ion-header-bar>
 
-	<ion-content class="has-header" ng-controller="TimerController as timerCtrl">
+	<ion-content class="has-header" ng-controller="MoreInfoController">
 		<label class="item item-input item-stacked-label">
 			<span class="input-label">Matter</span>
-			<input type="text" placeholder="..." ng-model="timerCtrl.matter" />
+			<input type="text" placeholder="..." ng-model="currentTimeEntry.phase" />
 		</label>
 		<label class="item item-input item-stacked-label">
 			<span class="input-label">Phase</span>
-			<input type="text" placeholder="..." ng-model="timerCtrl.phase" />
+			<input type="text" placeholder="..." ng-model="currentTimeEntry.matter" />
 		</label>
 		<label class="item item-input item-stacked-label">
 			<span class="input-label">Narration</span>
-			<textarea placeholder="..." ng-model="timerCtrl.narration" rows="10"></textarea>
+			<textarea placeholder="..." ng-model="currentTimeEntry.narration" rows="10"></textarea>
 		</label>
 	</ion-content>
 

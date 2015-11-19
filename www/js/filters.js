@@ -1,4 +1,4 @@
-app.filter("numberFixedLen", function () {
+app.filter("fixedNumLength", function () {
 	return function (n, len) {
 		var num = parseInt(n, 10);
 

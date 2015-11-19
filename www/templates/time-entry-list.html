@@ -8,9 +8,9 @@
 
 	<ion-content class="has-header" ng-controller="TimeEntryListController">
 		<div class="list">
-			<a class="item" href="#" collection-repeat="timeEntry in timeEntries">
-				<h2>{{ timeEntry.clientName }} - <strong ng-class="(timeEntry.sentAs == 'Final') ? 'balanced' : 'energized'">{{ timeEntry.sentAs }}</strong></h2>
-				<span class="item-note">{{ (timeEntry.hours | numberFixedLen:2) + &quot;:&quot; + (timeEntry.minutes | numberFixedLen:2)  + &quot;:&quot; + (timeEntry.seconds | numberFixedLen:2) }}</span>
+			<a class="item" href="#" collection-repeat="timeEntry in timeEntries" ng-click="showAlert()">
+				<h2>{{ timeEntry.clientName }} - <strong ng-class="(timeEntry.status == 'Final') ? 'balanced' : 'energized'">{{ timeEntry.status }}</strong></h2>
+				<span class="item-note">{{ (timeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (timeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (timeEntry.seconds | fixedNumLength:2) }}</span>
 				<p>{{ timeEntry.matter }}</p>
 			</a>
 		</div>

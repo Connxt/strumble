@@ -1,213 +1,22 @@
 app.factory("TimeEntries", function () {
-	var self = this,
-		timeEntries = [{
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Draft",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Draft",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Draft",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}, {
-			clientName: "Sample Client Name",
-			matter: "Sample Matter Lorem ipsum dolor sit amet",
-			phase: "Sample Phase",
-			narration: "Sample Narration",
-			hours: 3,
-			minutes: 2,
-			seconds: 1,
-			sentAs: "Final",
-			recipientEmail: "ryanskiefelipe@gmail.com"
-		}];
+	var self = this;
 
 	self.getAll = function () {
-		return timeEntries;
+		var timeEntries = window.localStorage["timeEntries"];
+		if(timeEntries) {
+			return angular.fromJson(timeEntries);
+		}
+
+		return [];
 	};
 
 	self.get = function (index) {
-		return timeEntries[index];
+		var timeEntries = window.localStorage["timeEntries"];
+		if(timeEntries) {
+			return angular.fromJson(timeEntries[index]);
+		}
+
+		return [];
 	}
 
 	/**
@@ -218,13 +27,23 @@ app.factory("TimeEntries", function () {
 	 * @param {String} timeEntry.hours
 	 * @param {String} timeEntry.minutes
 	 * @param {String} timeEntry.seconds
-	 * @param {String} timeEntry.sentAs
+	 * @param {String} timeEntry.status
 	 * @param {String} timeEntry.recipientEmail
 	 * @param {date} timeEntry.dateSent
 	 * @param {time} timeEntry.timeSent
 	 */
 	self.add = function (timeEntry) {
+		var timeEntries = window.localStorage["timeEntries"];
+
+		if(timeEntries) {
+			timeEntries = angular.fromJson(timeEntries);
+		}
+		else {
+			timeEntries = [];
+		}
+
 		timeEntries.push(timeEntry);
+		window.localStorage["timeEntries"] = angular.toJson(timeEntries);
 	};
 
 	return self;

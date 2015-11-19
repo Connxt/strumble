@@ -27,6 +27,11 @@ app.constant("APP_STATES", {
 	timeEntryList: "app.time-entry-list"
 });
 
+app.constant("TIME_ENTRY_STATUSES", {
+	draft: "Draft",
+	final: "Final"
+});
+
 app.config(function ($stateProvider, $urlRouterProvider, APP_STATES) {
 	$stateProvider
 	.state(APP_STATES.app, {

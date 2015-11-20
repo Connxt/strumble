@@ -253,7 +253,7 @@ app.controller("SettingsController", function ($scope, $ionicPopup, Settings) {
 
 	$scope.setRecipientEmail = function () {
 		$ionicPopup.show({
-			template: "<label class='item item-input'><input type='email' ng-model='tempSettings.recipientEmail' placeholder='sample_email@domain.com' autofocus/></label>",
+			template: "<label class='item item-input'><input type='email' ng-model='tempSettings.recipientEmail' placeholder='sample_email@domain.com' ng-bind'focusMe' autofocus/></label>",
 			title: "Enter Recipient Email",
 			subTitle: "Please enter a valid email address",
 			scope: $scope,

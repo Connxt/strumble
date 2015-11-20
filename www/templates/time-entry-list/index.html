@@ -11,23 +11,13 @@
 			<div class="item item-text-wrap"><h2>No Time Entries Yet!</h2></div>
 		</div>
 
-		<!-- <div ng-show="timeEntries.length" class="list">
-			<a class="item item-icon-right" collection-repeat="timeEntry in timeEntries" ng-click="showDetails($index)">
-				<h2><strong>{{ timeEntry.clientName || "..." }}</strong> - <strong ng-class="(timeEntry.status == TIME_ENTRY_STATUSES.final) ? 'balanced' : 'energized'">{{ timeEntry.status }}</strong></h2>
-				<span class="item-note">{{ (timeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (timeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (timeEntry.seconds | fixedNumLength:2) }}</span>
-				<h3>{{ timeEntry.matter || "..." }}</h3>
-				<h3 class="dark">{{ timeEntry.phase || "..." }}</h3>
-				<i class="icon ion-ios-arrow-right"></i>
-			</a>
-		</div>
- -->
 		<div class="list card" ng-show="timeEntries.length">
 			<a class="item item-icon-right" ng-repeat="timeEntry in timeEntries" ng-click="showDetails($index)">
 				<h2><strong>{{ timeEntry.clientName || "..." }}</strong> - <strong ng-class="(timeEntry.status == TIME_ENTRY_STATUSES.final) ? 'balanced' : 'energized'">{{ timeEntry.status }}</strong></h2>
 				<span class="item-note">{{ (timeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (timeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (timeEntry.seconds | fixedNumLength:2) }}</span>
 				<h3>{{ timeEntry.matter || "..." }}</h3>
 				<h3 class="dark">{{ timeEntry.phase || "..." }}</h3>
-				<i class="icon ion-ios-arrow-right"></i>
+				<i class="icon ion-chevron-right icon-accessory"></i>
 			</a>
 		</div>
 	</ion-content>

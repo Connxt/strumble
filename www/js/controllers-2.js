@@ -147,9 +147,9 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 			errors.push("Recipient Email");
 		}
 
-		if(settings.myEmail === undefined || settings.myEmailPassword === undefined) {
-			errors.push("My Email");
-		}
+		// if(settings.myEmail === undefined || settings.myEmailPassword === undefined) {
+		// 	errors.push("My Email");
+		// }
 
 		if(errors.length >= 1) {
 			for(var i = 0; i < errors.length; i++) {

@@ -33,6 +33,11 @@ app.constant("TIME_ENTRY_STATUSES", {
 	final: "Final"
 });
 
+app.constant("DEFAULT_SETTINGS", {
+	timerModeAsDefault: false,
+	minutesPerUnit: 6
+});
+
 app.config(function ($stateProvider, $urlRouterProvider, APP_STATES) {
 	$stateProvider
 	.state(APP_STATES.app, {
@@ -41,7 +46,6 @@ app.config(function ($stateProvider, $urlRouterProvider, APP_STATES) {
 		templateUrl: "templates/app.html"
 	})
 	.state(APP_STATES.main, {
-		cache: false,
 		url: "/main",
 		views: {
 			"main": {

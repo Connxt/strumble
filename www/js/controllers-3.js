@@ -25,14 +25,39 @@ app.controller("HeaderController", function ($scope, $state, $ionicPopover, $ion
 	});
 });
 
-app.controller("TimerController", function ($scope, $state, $stateParams, $interval, APP_STATES, DEFAULT_SETTINGS, TimeEntries, Settings, CurrentTimeEntry) {
+app.controller("TimerController", function ($scope, $rootScope, $state, $stateParams, $interval, APP_STATES, DEFAULT_SETTINGS, TimeEntries, Settings, CurrentTimeEntry) {
 	var timer,
 		settings = Settings.get();
 
 	$scope.APP_STATES = APP_STATES;
 	$scope.milliseconds = 0;
-	$scope.currentTimeEntry = CurrentTimeEntry;
+	$rootScope.currentTimeEntry = CurrentTimeEntry.get();
+
+	$rootScope.$watch("currentTimeEntry", function (newValue, oldValue) {
+		CurrentTimeEntry.set(newValue);
+		$rootScope.currentTimeEntry = CurrentTimeEntry.get();
+	}, true);
+
+	$rootScope.$watch("currentTimeEntry.units", function (newValue, oldValue) {
+		$rootScope.currentTimeEntry.units = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > 99 || newValue < 0) ? 0 : parseInt(newValue);
+	});
+
+	$rootScope.$watch("currentTimeEntry.hours", function (newValue, oldValue) {
+		$rootScope.currentTimeEntry.hours = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > 99 || newValue < 0) ? 0 : parseInt(newValue);
+	});
+
+	$rootScope.$watch("currentTimeEntry.minutes", function (newValue, oldValue) {
+		$rootScope.currentTimeEntry.minutes = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > 60 || newValue < 0) ? 0 : parseInt(newValue);
+	});
+
+	$rootScope.$watch("currentTimeEntry.seconds", function (newValue, oldValue) {
+		$rootScope.currentTimeEntry.seconds = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > 60 || newValue < 0) ? 0 : parseInt(newValue);
+	});
+
 	$scope.isPlaying = false;
+
+	console.log($rootScope.currentTimeEntry);
+	console.log(settings);
 
 	if(Object.keys(settings).length === 0) {
 		settings.timerModeAsDefault = DEFAULT_SETTINGS.timerModeAsDefault;
@@ -41,26 +66,22 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 		Settings.set(settings);
 	}
 
-	$scope.currentTimeEntry.isTimerMode = settings.timerModeAsDefault;
+	$rootScope.currentTimeEntry.isTimerMode = settings.timerModeAsDefault;
 
-	$scope.$watch("currentTimeEntry.units", function (newValue, oldValue) {
-		$scope.currentTimeEntry.units = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > 99 || newValue < 0) ? 0 : parseInt(newValue);
-	});
+	// if($rootScope.currentTimeEntry.isTimerMode === undefined) {
+	// 	if(settings.timerModeAsDefault === undefined) {
+	// 		settings.timerModeAsDefault = false;
+	// 		Settings.set(settings);
 
-	$scope.$watch("currentTimeEntry.hours", function (newValue, oldValue) {
-		$scope.currentTimeEntry.hours = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > 99 || newValue < 0) ? 0 : parseInt(newValue);
-	});
-
-	$scope.$watch("currentTimeEntry.minutes", function (newValue, oldValue) {
-		$scope.currentTimeEntry.minutes = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > 60 || newValue < 0) ? 0 : parseInt(newValue);
-	});
-
-	$scope.$watch("currentTimeEntry.seconds", function (newValue, oldValue) {
-		$scope.currentTimeEntry.seconds = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > 60 || newValue < 0) ? 0 : parseInt(newValue);
-	});
+	// 		$rootScope.currentTimeEntry.isTimerMode = false;
+	// 	}
+	// 	else {
+	// 		$rootScope.currentTimeEntry.isTimerMode = settings.timerModeAsDefault;
+	// 	}
+	// }
 
 	$scope.toggleMode = function () {
-		if(!$scope.currentTimeEntry.isTimerMode) {
+		if(!$rootScope.currentTimeEntry.isTimerMode) {
 			$scope.isPlaying = true;
 			$scope.toggleTimer($scope.isPlaying);
 		}
@@ -77,27 +98,19 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 			timer = $interval(function () {
 				$scope.milliseconds += 100;
 
-				// increments seconds
 				if($scope.milliseconds >= 1000) {
-					$scope.currentTimeEntry.seconds++;
+					$rootScope.currentTimeEntry.seconds++;
 					$scope.milliseconds = 0;
 				}
 
-				// increments minutes
-				if($scope.currentTimeEntry.seconds >= 60) {
-					$scope.currentTimeEntry.minutes++;
-					$scope.currentTimeEntry.seconds = 0;
+				if($rootScope.currentTimeEntry.seconds >= 60) {
+					$rootScope.currentTimeEntry.minutes++;
+					$rootScope.currentTimeEntry.seconds = 0;
 				}
 
-				// increments hours
-				if($scope.currentTimeEntry.minutes >= 60) {
-					$scope.currentTimeEntry.hours++;
-					$scope.currentTimeEntry.minutes = 0;
-				}
-
-				// increments units
-				if($scope.currentTimeEntry.units <= 0) {
-					$scope.currentTimeEntry.units = 1;
+				if($rootScope.currentTimeEntry.minutes >= 60) {
+					$rootScope.currentTimeEntry.hours++;
+					$rootScope.currentTimeEntry.minutes = 0;
 				}
 			}, 100);
 		}
@@ -107,19 +120,24 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 		$scope.isPlaying = true;
 		$scope.toggleTimer($scope.isPlaying);
 
-		$scope.currentTimeEntry.hours = 0;
-		$scope.currentTimeEntry.minutes = 0;
-		$scope.currentTimeEntry.seconds = 0;
+		$rootScope.currentTimeEntry.hours = 0;
+		$rootScope.currentTimeEntry.minutes = 0;
+		$rootScope.currentTimeEntry.seconds = 0;
 		$scope.milliseconds = 0;
 	};
 });
 
-app.controller("MoreInfoController", function ($scope, CurrentTimeEntry) {
-	$scope.currentTimeEntry = CurrentTimeEntry;
+app.controller("MoreInfoController", function ($scope, $rootScope, CurrentTimeEntry) {
+	$rootScope.currentTimeEntry = CurrentTimeEntry.get();
+
+	// $rootScope.$watch("currentTimeEntry", function (newValue, oldValue) {
+	// 	CurrentTimeEntry.set(newValue);
+	// 	$rootScope.currentTimeEntry = CurrentTimeEntry.get();
+	// }, true);
 });
 
-app.controller("SendController", function ($scope, $state, $ionicActionSheet, $ionicPopup, $ionicModal, APP_STATES, TIME_ENTRY_STATUSES, TimeEntries, CurrentTimeEntry, Settings, fixedNumLengthFilter) {
-	$scope.currentTimeEntry = CurrentTimeEntry;
+app.controller("SendController", function ($scope, $rootScope, $state, $ionicActionSheet, $ionicPopup, $ionicModal, APP_STATES, TIME_ENTRY_STATUSES, TimeEntries, CurrentTimeEntry, Settings, fixedNumLengthFilter) {
+	$rootScope.currentTimeEntry = CurrentTimeEntry.get();
 
 	$ionicModal.fromTemplateUrl("templates/main/preview.html", {
 		scope: $scope,
@@ -144,6 +162,10 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 		if(settings.recipientEmail === undefined) {
 			errors.push("Recipient Email");
 		}
+
+		// if(settings.myEmail === undefined) {
+		// 	errors.push("My Email");
+		// }
 
 		if(errors.length >= 1) {
 			for(var i = 0; i < errors.length; i++) {
@@ -175,20 +197,20 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 					var settings = Settings.get()
 
 					if(index == 0) {
-						$scope.currentTimeEntry.status = TIME_ENTRY_STATUSES.final;
+						$rootScope.currentTimeEntry.status = TIME_ENTRY_STATUSES.final;
 					}
 					else if(index == 1) {
-						$scope.currentTimeEntry.status = TIME_ENTRY_STATUSES.draft;
+						$rootScope.currentTimeEntry.status = TIME_ENTRY_STATUSES.draft;
 					}
 					else if(index == 2) {
 						$scope.preview();
 					}
 
 					if(index < 2) {
-						$scope.currentTimeEntry.recipientEmail = settings.recipientEmail;
-						$scope.currentTimeEntry.dateSent = Date();
+						$rootScope.currentTimeEntry.recipientEmail = settings.recipientEmail;
+						$rootScope.currentTimeEntry.dateSent = Date();
 
-						TimeEntries.add($scope.currentTimeEntry);
+						TimeEntries.add($rootScope.currentTimeEntry);
 						// var timeEntry = TimeEntries.get(TimeEntries.getAll().length - 1);
 						
 						// var emailBody =
@@ -211,19 +233,9 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 						// }, function () {
 						// 	console.log("email view dismissed");
 						// }, this);
-						
-						// resets the CurrentTimeEntry
-						CurrentTimeEntry.units = 0;
-						CurrentTimeEntry.hours = 0;
-						CurrentTimeEntry.minutes = 0;
-						CurrentTimeEntry.seconds = 0;
-						CurrentTimeEntry.clientName = "";
-						CurrentTimeEntry.matter = "";
-						CurrentTimeEntry.phase = "";
-						CurrentTimeEntry.narration = "";
 
-						delete CurrentTimeEntry.recipientEmail;
-						delete CurrentTimeEntry.dateSent;
+						$rootScope.currentTimeEntry = {};
+						CurrentTimeEntry.clear();
 
 						$scope.previewModal.hide();
 						$state.go(APP_STATES.main);

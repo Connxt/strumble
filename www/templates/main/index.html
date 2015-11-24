@@ -16,7 +16,7 @@
 
 			<div ng-show="currentTimeEntry.isTimerMode" class="text-center">
 				<label class="item">
-					<div class="timer-display">{{ (currentTimeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (currentTimeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (currentTimeEntry.seconds | fixedNumLength:2) }}</div>
+					<div class="timer-display">{{ currentTimeEntry.units }} {{ (currentTimeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (currentTimeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (currentTimeEntry.seconds | fixedNumLength:2) }}</div>
 				</label>
 				<div class="button-bar">
 					<button class="button" ng-class="isPlaying ? &apos;button-assertive icon ion-pause&apos; : &apos;button-positive icon ion-play&apos;" ng-click="toggleTimer(isPlaying)"></button>
@@ -25,6 +25,10 @@
 			</div>
 
 			<div ng-hide="currentTimeEntry.isTimerMode">
+				<label class="item item-input">
+					<span class="input-label">Units</span>
+					<input type="number" placeholder="0" ng-model="currentTimeEntry.units" />
+				</label>
 				<label class="item item-input">
 					<span class="input-label">Hours</span>
 					<input type="number" placeholder="0" ng-model="currentTimeEntry.hours" />

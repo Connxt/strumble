@@ -50,41 +50,7 @@ app.factory("TimeEntries", function () {
 });
 
 app.factory("CurrentTimeEntry", function () {
-	var self = this,
-		currentTimeEntry = {};
-	// var self = this;
-
-	self.get = function () {
-		return currentTimeEntry;
-		// var currentTimeEntry = window.localStorage["strumble.currentTimeEntry"];
-		// if(currentTimeEntry) {
-		// 	return angular.fromJson(currentTimeEntry);
-		// }
-
-		// return {};
-	};
-
-	/**
-	 * @param {String} timeEntry.clientName
-	 * @param {String} timeEntry.matter
-	 * @param {String} timeEntry.phase
-	 * @param {String} timeEntry.narration
-	 * @param {boolean} timeEntry.isTimerMode
-	 * @param {String} timeEntry.hours
-	 * @param {String} timeEntry.minutes
-	 * @param {String} timeEntry.seconds
-	 */
-	self.set = function (timeEntry) {
-		currentTimeEntry = timeEntry;
-		// window.localStorage["strumble.currentTimeEntry"] = angular.toJson(timeEntry);
-	};
-
-	self.clear = function () {
-		currentTimeEntry = {};
-		// window.localStorage["strumble.currentTimeEntry"] = angular.toJson({});
-	};
-
-	return self;
+	return {};
 });
 
 app.factory("Settings", function () {

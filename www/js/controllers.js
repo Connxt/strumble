@@ -25,7 +25,7 @@ app.controller("HeaderController", function ($scope, $state, $ionicPopover, $ion
 	});
 });
 
-app.controller("TimerController", function ($scope, $state, $stateParams, $interval, APP_STATES, DEFAULT_SETTINGS, TimeEntries, Settings, CurrentTimeEntry) {
+app.controller("TimerController", function ($scope, $state, $stateParams, $interval, APP_STATES, DEFAULT_SETTINGS, Timer, TimeEntries, Settings, CurrentTimeEntry) {
 	var timer,
 		settings = Settings.get();
 
@@ -33,6 +33,7 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 	$scope.currentTimeEntry = CurrentTimeEntry;
 	$scope.currentTimeEntry.milliseconds = 0;
 	$scope.isPlaying = false;
+	$scope.timerService = Timer;
 
 	if(Object.keys(settings).length === 0) {
 		settings.timerModeAsDefault = DEFAULT_SETTINGS.timerModeAsDefault;
@@ -59,21 +60,13 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 		$scope.currentTimeEntry.seconds = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > 60 || newValue < 0) ? 0 : parseInt(newValue);
 	});
 
-	$scope.toggleMode = function () {
-		if(!$scope.currentTimeEntry.isTimerMode) {
-			$scope.isPlaying = true;
-			$scope.toggleTimer($scope.isPlaying);
-		}
-	};
-
-	$scope.toggleTimer = function (isPlaying) {
-		if($scope.isPlaying) {
-			$scope.isPlaying = false;
+	$scope.$watch("timerService.isPlaying", function (newValue, oldValue) {
+		// if the timer is playing
+		if(!newValue) {
 			$interval.cancel(timer);
 		}
+		// if the timer is not playing
 		else {
-			$scope.isPlaying = true;
-
 			timer = $interval(function () {
 				$scope.currentTimeEntry.milliseconds += 100;
 
@@ -99,11 +92,28 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 				}
 			}, 100);
 		}
+
+		$scope.timerService.isPlaying = newValue;
+	});
+
+	$scope.toggleMode = function () {
+		if(!$scope.currentTimeEntry.isTimerMode) {
+			$scope.timerService.isPlaying = false;
+		}
+	};
+
+	$scope.toggleTimer = function () {
+		if($scope.timerService.isPlaying) {
+			$scope.timerService.isPlaying = false;
+		}
+		else {
+			$scope.timerService.isPlaying = true;
+		}
 	};
 
 	$scope.resetTimer = function () {
 		$scope.isPlaying = true;
-		$scope.toggleTimer($scope.isPlaying);
+		$scope.timerService.isPlaying = false;
 
 		$scope.currentTimeEntry.units = 0;
 		$scope.currentTimeEntry.hours = 0;
@@ -117,8 +127,9 @@ app.controller("MoreInfoController", function ($scope, CurrentTimeEntry) {
 	$scope.currentTimeEntry = CurrentTimeEntry;
 });
 
-app.controller("SendController", function ($scope, $state, $ionicActionSheet, $ionicPopup, $ionicModal, APP_STATES, TIME_ENTRY_STATUSES, TimeEntries, CurrentTimeEntry, Settings, fixedNumLengthFilter) {
+app.controller("SendController", function ($scope, $state, $ionicActionSheet, $ionicPopup, $ionicModal, APP_STATES, TIME_ENTRY_STATUSES, TimeEntries, AccumulatedTime, CurrentTimeEntry, Settings, Timer, fixedNumLengthFilter) {
 	$scope.currentTimeEntry = CurrentTimeEntry;
+	$scope.timerService = Timer;
 
 	$ionicModal.fromTemplateUrl("templates/main/preview.html", {
 		scope: $scope,
@@ -136,6 +147,8 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 	};
 
 	$scope.send = function (withPreview) {
+		$scope.timerService.isPlaying = false;
+
 		var settings = Settings.get(),
 			errors = [],
 			errorMessage = "";
@@ -188,6 +201,13 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 						$scope.currentTimeEntry.dateSent = new Date();
 
 						TimeEntries.add($scope.currentTimeEntry);
+						AccumulatedTime.add({
+							units: $scope.currentTimeEntry.units,
+							hours: $scope.currentTimeEntry.hours,
+							minutes: $scope.currentTimeEntry.minutes,
+							seconds: $scope.currentTimeEntry.seconds,
+						});
+
 						// var timeEntry = TimeEntries.get(TimeEntries.getAll().length - 1);
 						
 						// var emailBody =
@@ -236,9 +256,10 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 	};
 });
 
-app.controller("TimeEntryListController", function ($scope, $state, TimeEntries, TIME_ENTRY_STATUSES, APP_STATES) {
+app.controller("TimeEntryListController", function ($scope, $state, TimeEntries, AccumulatedTime, TIME_ENTRY_STATUSES, APP_STATES) {
 	$scope.timeEntries = TimeEntries.getAll();
 	$scope.TIME_ENTRY_STATUSES = TIME_ENTRY_STATUSES;
+	$scope.accumulatedTime = AccumulatedTime.get();
 
 	$scope.showDetails = function (timeEntryId) {
 		$state.go(APP_STATES.timeEntryDetails, { timeEntryId: timeEntryId });

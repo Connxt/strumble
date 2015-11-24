@@ -1,3 +1,60 @@
+app.factory("AccumulatedTime", function () {
+	var self = this;
+
+	self.get = function () {
+		var accumulatedTime = window.localStorage["strumble.accumulatedTime"];
+		if(accumulatedTime) {
+			return angular.fromJson(accumulatedTime);
+		}
+
+		return {};
+	};
+
+	/**
+	 * @param {number} accumulatedTime.units
+	 * @param {number} accumulatedTime.hours
+	 * @param {number} accumulatedTime.minutes
+	 * @param {number} accumulatedTime.seconds
+	 */
+	self.add = function (currentAccumulatedTime) {
+		var tempAccumulatedTime = window.localStorage["strumble.accumulatedTime"],
+			accumulatedTime = {};
+
+		if(tempAccumulatedTime) {
+			tempAccumulatedTime = angular.fromJson(tempAccumulatedTime);
+		}
+		else {
+			tempAccumulatedTime = {
+				units: 0,
+				hours: 0,
+				minutes: 0,
+				seconds: 0
+			};
+		}
+
+		accumulatedTime = {
+			units: tempAccumulatedTime.units + currentAccumulatedTime.units,
+			hours: tempAccumulatedTime.hours + currentAccumulatedTime.hours,
+			minutes: tempAccumulatedTime.minutes + currentAccumulatedTime.minutes,
+			seconds: tempAccumulatedTime.seconds + currentAccumulatedTime.seconds,
+		};
+
+		if(accumulatedTime.seconds >= 60) {
+			accumulatedTime.seconds -= 60;
+			accumulatedTime.minutes += 1;
+		}
+
+		if(accumulatedTime.minutes >= 60) {
+			accumulatedTime.minutes -= 60;
+			accumulatedTime.hours += 1;
+		}
+
+		window.localStorage["strumble.accumulatedTime"] = angular.toJson(accumulatedTime);
+	};
+
+	return self;
+});
+
 app.factory("TimeEntries", function () {
 	var self = this;
 
@@ -49,10 +106,6 @@ app.factory("TimeEntries", function () {
 	return self;
 });
 
-app.factory("CurrentTimeEntry", function () {
-	return {};
-});
-
 app.factory("Settings", function () {
 	var self = this;
 
@@ -77,4 +130,14 @@ app.factory("Settings", function () {
 	};
 
 	return self;
+});
+
+app.factory("CurrentTimeEntry", function () {
+	return {};
+});
+
+app.factory("Timer", function () {
+	return {
+		isPlaying: false
+	};
 });

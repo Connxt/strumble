@@ -35,10 +35,10 @@
 								<h1>{{ (currentTimeEntry.seconds | fixedNumLength:2) }}</h1> 
 							</li>
 						</ul>
-					<!-- {{ currentTimeEntry.units | fixedNumLength:2 }} {{ (currentTimeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (currentTimeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (currentTimeEntry.seconds | fixedNumLength:2) }} --></div>
+					</div>
 				</label>
 				<div class="button-bar">
-					<button class="button" ng-class="isPlaying ? &apos;button-assertive icon ion-pause&apos; : &apos;button-positive icon ion-play&apos;" ng-click="toggleTimer(isPlaying)"></button>
+					<button class="button" ng-class="timerService.isPlaying ? &apos;button-assertive icon ion-pause&apos; : &apos;button-positive icon ion-play&apos;" ng-click="toggleTimer()"></button>
 					<button class="button button-stable icon ion-trash-b" ng-click="resetTimer()"></button>
 				</div>
 			</div>

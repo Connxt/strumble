@@ -30,8 +30,8 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 		settings = Settings.get();
 
 	$scope.APP_STATES = APP_STATES;
-	$scope.milliseconds = 0;
 	$scope.currentTimeEntry = CurrentTimeEntry;
+	$scope.currentTimeEntry.milliseconds = 0;
 	$scope.isPlaying = false;
 
 	if(Object.keys(settings).length === 0) {
@@ -75,12 +75,15 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 			$scope.isPlaying = true;
 
 			timer = $interval(function () {
-				$scope.milliseconds += 100;
+				$scope.currentTimeEntry.milliseconds += 100;
 
 				// increments seconds
-				if($scope.milliseconds >= 1000) {
+				if($scope.currentTimeEntry.milliseconds >= 1000) {
 					$scope.currentTimeEntry.seconds++;
-					$scope.milliseconds = 0;
+					$scope.currentTimeEntry.milliseconds = 0;
+
+					// tries to increment the units each second
+					$scope.currentTimeEntry.units = ($scope.currentTimeEntry.minutes / settings.minutesPerUnit) + 1
 				}
 
 				// increments minutes
@@ -94,11 +97,6 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 					$scope.currentTimeEntry.hours++;
 					$scope.currentTimeEntry.minutes = 0;
 				}
-
-				// increments units
-				if($scope.currentTimeEntry.units <= 0) {
-					$scope.currentTimeEntry.units = 1;
-				}
 			}, 100);
 		}
 	};
@@ -107,10 +105,11 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 		$scope.isPlaying = true;
 		$scope.toggleTimer($scope.isPlaying);
 
+		$scope.currentTimeEntry.units = 0;
 		$scope.currentTimeEntry.hours = 0;
 		$scope.currentTimeEntry.minutes = 0;
 		$scope.currentTimeEntry.seconds = 0;
-		$scope.milliseconds = 0;
+		$scope.currentTimeEntry.milliseconds = 0;
 	};
 });
 
@@ -186,7 +185,7 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 
 					if(index < 2) {
 						$scope.currentTimeEntry.recipientEmail = settings.recipientEmail;
-						$scope.currentTimeEntry.dateSent = Date();
+						$scope.currentTimeEntry.dateSent = new Date();
 
 						TimeEntries.add($scope.currentTimeEntry);
 						// var timeEntry = TimeEntries.get(TimeEntries.getAll().length - 1);
@@ -217,6 +216,7 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 						CurrentTimeEntry.hours = 0;
 						CurrentTimeEntry.minutes = 0;
 						CurrentTimeEntry.seconds = 0;
+						CurrentTimeEntry.milliseconds = 0;
 						CurrentTimeEntry.clientName = "";
 						CurrentTimeEntry.matter = "";
 						CurrentTimeEntry.phase = "";

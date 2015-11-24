@@ -12,7 +12,7 @@
 			<ion-item><strong>Sent As:</strong> <strong ng-class="(timeEntry.status == TIME_ENTRY_STATUSES.final) ? 'balanced' : 'energized'">{{ timeEntry.status }}</strong></ion-item>
 			<ion-item><strong>Recipient Email:</strong> {{ timeEntry.recipientEmail  || "..."  }}</ion-item>
 			<ion-item><strong>Date Sent:</strong> {{ timeEntry.dateSent | date:"MM/dd/yyyy" }}</ion-item>
-			<ion-item><strong>Length:</strong> {{ timeEntry.units + " units, " + (timeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (timeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (timeEntry.seconds | fixedNumLength:2) }}</ion-item>
+			<ion-item><strong>Length:</strong> {{ timeEntry.units + " " + ((timeEntry.units <= 1) ? "unit" : "units") + ", " + (timeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (timeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (timeEntry.seconds | fixedNumLength:2) }}</ion-item>
 			<ion-item><strong>Matter:</strong> {{ timeEntry.matter  || "..."  }}</ion-item>
 			<ion-item><strong>Phase:</strong> {{ timeEntry.phase  || "..."  }}</ion-item>
 			<ion-item><strong>Narration:</strong> {{ timeEntry.narration  || "..."  }}</ion-item>

@@ -3,11 +3,17 @@ app.factory("AccumulatedTime", function () {
 
 	self.get = function () {
 		var accumulatedTime = window.localStorage["strumble.accumulatedTime"];
+
 		if(accumulatedTime) {
 			return angular.fromJson(accumulatedTime);
 		}
 
-		return {};
+		return {
+			units: 0,
+			hours: 0,
+			minutes: 0,
+			seconds: 0
+		};
 	};
 
 	/**

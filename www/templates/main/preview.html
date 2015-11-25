@@ -7,7 +7,7 @@
 	<ion-content>
 		<div class="list card">
 			<ion-item><strong>Client Name:</strong> {{ currentTimeEntry.clientName || "..." }}</ion-item>
-			<ion-item><strong>Length:</strong> {{ currentTimeEntry.units + " units, " + (currentTimeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (currentTimeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (currentTimeEntry.seconds | fixedNumLength:2) }}</ion-item>
+			<ion-item><strong>Length:</strong> {{ currentTimeEntry.units + " " + ((accumulatedTime.units <= 1) ? "unit" : "units") + ", " + (currentTimeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (currentTimeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (currentTimeEntry.seconds | fixedNumLength:2) }}</ion-item>
 			<ion-item><strong>Matter:</strong> {{ currentTimeEntry.matter || "..." }}</ion-item>
 			<ion-item><strong>Phase:</strong> {{ currentTimeEntry.phase || "..." }}</ion-item>
 			<ion-item><strong>Narration:</strong> {{ currentTimeEntry.narration || "..." }}</ion-item>

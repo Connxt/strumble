@@ -14,19 +14,23 @@ div.footer-button button.button.button-full {
 	overflow: initial;
 	white-space: initial;
 }
+div.timer-display{
+	display: table;
+	margin: 0 auto;
+}
 
 div.timer-display > ul{
-	/*background: red;*/
 	position: relative;
+	list-style-type:none;
 }
 div.timer-display > ul > li{
-	display: inline-block;
-	/*background: blue;*/
-	width: auto;
+	float: left;
+	width: 80px;
+	margin: 0px auto;
 	position: relative;
 }
 div.timer-display > ul > li > h1{
-	font-size: 60px;
+	font-size: 0.9em;
 	color: #323841;
 }
 div.timer-display > ul > li > ul > li > h5{

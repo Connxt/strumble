@@ -1,0 +1,13 @@
+<div class="list">
+	<div class="item item-input" ng-repeat="email in tempSettings.recipientEmails">
+		<label class="item-input" style="padding-left: 0px; padding-top: 0px; padding-bottom: 0px; width: 90%;">
+			<input type="email" style="padding-right: 0px; padding-top: 0px; padding-bottom: 0px;" placeholder="sample_email@domain.com" ng-model="email.value" />
+		</label>
+		<a class="button button-clear button-small button-balanced" ng-click="addRecipientEmail()" ng-if="$index == tempSettings.recipientEmails.length - 1">
+			<i class="icon ion-ios-plus"></i>
+		</a>
+		<a class="button button-clear button-small button-assertive" ng-click="removeRecipientEmail($index)" ng-if="$index != tempSettings.recipientEmails.length - 1">
+			<i class="icon ion-ios-close"></i>
+		</a>
+	</div>
+</div>

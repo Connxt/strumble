@@ -8,18 +8,19 @@
 
 	<ion-content class="has-header" ng-controller="SettingsController">
 		<div class="list">
-			<ion-item ng-click="setRecipientEmail()">
+			<!-- <ion-item ng-click="setRecipientEmail()">
 				<h2>Recipient Email</h2>
 				<p>{{ settings.recipientEmail || "..."}}</p>
-			</ion-item>
+			</ion-item> -->
 			<!-- <ion-item ng-click="setMyEmail()">
 				<h2>My Email</h2>
 				<p>{{ settings.myEmail || "..."}}</p>
 			</ion-item> -->
 			<ion-item ng-click="setRecipientEmails()">
 				<h2>Recipient Emails</h2>
+				<span ng-repeat="email in settings.recipientEmails">{{ email.value }}<span ng-if="$index < settings.recipientEmails.length - 1">, </span></span>
 			</ion-item>
-			<ion-toggle ng-model="tempSettings.timerModeAsDefault" toggle-class="toggle-positive" ng-change="setDefaultMode()">Timer Mode As Default</ion-toggle>
+			<ion-toggle ng-model="settings.timerModeAsDefault" toggle-class="toggle-positive" ng-change="setDefaultMode()">Timer Mode As Default</ion-toggle>
 			<ion-item ng-click="setMinutesPerUnit()">
 				<h2>Minutes per unit</h2>
 				<p>{{ settings.minutesPerUnit || "..."}}</p>

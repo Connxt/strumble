@@ -25,7 +25,7 @@ app.controller("HeaderController", function ($scope, $state, $ionicPopover, $ion
 	});
 });
 
-app.controller("TimerController", function ($scope, $state, $stateParams, $interval, APP_STATES, DEFAULT_SETTINGS, Timer, TimeEntries, Settings, CurrentTimeEntry) {
+app.controller("TimerController", function ($scope, $state, $stateParams, $interval, APP_STATES, DEFAULT_SETTINGS, TIMER_LIMITS, Timer, TimeEntries, Settings, CurrentTimeEntry) {
 	var timer,
 		settings = Settings.get();
 
@@ -38,6 +38,7 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 	if(Object.keys(settings).length === 0) {
 		settings.timerModeAsDefault = DEFAULT_SETTINGS.timerModeAsDefault;
 		settings.minutesPerUnit = DEFAULT_SETTINGS.minutesPerUnit;
+		settings.recipientEmails = DEFAULT_SETTINGS.recipientEmails;
 
 		Settings.set(settings);
 	}
@@ -45,19 +46,19 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 	$scope.currentTimeEntry.isTimerMode = settings.timerModeAsDefault;
 
 	$scope.$watch("currentTimeEntry.units", function (newValue, oldValue) {
-		$scope.currentTimeEntry.units = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > 99 || newValue < 0) ? 0 : parseInt(newValue);
+		$scope.currentTimeEntry.units = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > TIMER_LIMITS.units || newValue < 0) ? 0 : parseInt(newValue);
 	});
 
 	$scope.$watch("currentTimeEntry.hours", function (newValue, oldValue) {
-		$scope.currentTimeEntry.hours = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > 99 || newValue < 0) ? 0 : parseInt(newValue);
+		$scope.currentTimeEntry.hours = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > TIMER_LIMITS.hours || newValue < 0) ? 0 : parseInt(newValue);
 	});
 
 	$scope.$watch("currentTimeEntry.minutes", function (newValue, oldValue) {
-		$scope.currentTimeEntry.minutes = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > 60 || newValue < 0) ? 0 : parseInt(newValue);
+		$scope.currentTimeEntry.minutes = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > TIMER_LIMITS.minutes || newValue < 0) ? 0 : parseInt(newValue);
 	});
 
 	$scope.$watch("currentTimeEntry.seconds", function (newValue, oldValue) {
-		$scope.currentTimeEntry.seconds = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > 60 || newValue < 0) ? 0 : parseInt(newValue);
+		$scope.currentTimeEntry.seconds = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > TIMER_LIMITS.seconds || newValue < 0) ? 0 : parseInt(newValue);
 	});
 
 	$scope.$watch("timerService.isPlaying", function (newValue, oldValue) {
@@ -71,24 +72,31 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 				$scope.currentTimeEntry.milliseconds += 100;
 
 				// increments seconds
-				if($scope.currentTimeEntry.milliseconds >= 1000) {
+				if($scope.currentTimeEntry.milliseconds >= TIMER_LIMITS.milliseconds) {
 					$scope.currentTimeEntry.seconds++;
 					$scope.currentTimeEntry.milliseconds = 0;
 
 					// tries to increment the units each second
-					$scope.currentTimeEntry.units = ($scope.currentTimeEntry.minutes / settings.minutesPerUnit) + 1
+					var hoursToMinutes = $scope.currentTimeEntry.hours * 60;
+					var tempMinutes = hoursToMinutes + $scope.currentTimeEntry.minutes;
+					
+					$scope.currentTimeEntry.units = parseInt(tempMinutes / settings.minutesPerUnit) + 1;
 				}
 
 				// increments minutes
-				if($scope.currentTimeEntry.seconds >= 60) {
+				if($scope.currentTimeEntry.seconds >= TIMER_LIMITS.seconds) {
 					$scope.currentTimeEntry.minutes++;
 					$scope.currentTimeEntry.seconds = 0;
 				}
 
 				// increments hours
-				if($scope.currentTimeEntry.minutes >= 60) {
+				if($scope.currentTimeEntry.minutes >= TIMER_LIMITS.minutes) {
 					$scope.currentTimeEntry.hours++;
 					$scope.currentTimeEntry.minutes = 0;
+				}
+
+				if($scope.currentTimeEntry.units >= TIMER_LIMITS.units || $scope.currentTimeEntry.hours >= TIMER_LIMITS.hours) {
+					$scope.timerService.isPlaying = false;
 				}
 			}, 100);
 		}
@@ -153,8 +161,12 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 			errors = [],
 			errorMessage = "";
 
-		if(settings.recipientEmail === undefined) {
-			errors.push("Recipient Email");
+		// if(settings.recipientEmail === undefined) {
+		// 	errors.push("Recipient Email");
+		// }
+
+		if(Object.keys(settings.recipientEmails[0]).length === 0) {
+			errors.push("Recipient Emails");
 		}
 
 		if(errors.length >= 1) {
@@ -271,13 +283,13 @@ app.controller("TimeEntryDetailsController", function ($scope, $stateParams, Tim
 	$scope.TIME_ENTRY_STATUSES = TIME_ENTRY_STATUSES;
 });
 
-app.controller("SettingsController", function ($scope, $ionicPopup, Settings) {
+app.controller("SettingsController", function ($scope, $ionicPopup, Settings, TIMER_LIMITS) {
 	$scope.settings = Settings.get();
 	$scope.tempSettings = Settings.get();
 
 	$scope.setRecipientEmail = function () {
 		$ionicPopup.show({
-			template: "<label class='item item-input'><input type='email' ng-model='tempSettings.recipientEmail' placeholder='sample_email@domain.com' ng-bind'focusMe' autofocus/></label>",
+			templateUrl: "templates/settings/set-recipient-email.html",
 			title: "Enter Recipient Email",
 			subTitle: "Please enter a valid email address",
 			scope: $scope,
@@ -303,12 +315,59 @@ app.controller("SettingsController", function ($scope, $ionicPopup, Settings) {
 		});
 	};
 
+	$scope.setRecipientEmails = function () {
+		$ionicPopup.show({
+			templateUrl: "templates/settings/set-recipient-emails.html",
+			title: "Enter Recipient Emails",
+			subTitle: "Please enter valid email addresses",
+			scope: $scope,
+			buttons: [{
+				text: "Cancel"
+			}, {
+				text: "Save",
+				type: "button-positive",
+				onTap: function (e) {
+					var isValid = true;
+
+					for(var i = 0; i < $scope.tempSettings.recipientEmails.length; i++) {
+						console.log($scope.tempSettings.recipientEmails[i].value);
+						if(!$scope.tempSettings.recipientEmails[i].value) {
+							isValid = false;
+							break;
+						}
+					}
+
+					if(isValid) {
+						return isValid;
+					}
+					else {
+						e.preventDefault();
+					}
+				}
+			}]
+		}).then(function (result) {
+			if(result) {
+				Settings.set($scope.tempSettings);
+				$scope.settings = Settings.get();
+			}
+		});
+	};
+
+	$scope.addRecipientEmail = function () {
+		if($scope.tempSettings.recipientEmails[$scope.tempSettings.recipientEmails.length - 1].value) {
+			$scope.tempSettings.recipientEmails.push({
+				value: null
+			});
+		}
+	};
+
+	$scope.removeRecipientEmail = function (index) {
+		$scope.tempSettings.recipientEmails.splice(index, 1);
+	};
+
 	$scope.setMyEmail = function () {
 		$ionicPopup.show({
-			template:
-				"<label class='item item-input'>" +
-				"	<input type='email' ng-model='tempSettings.myEmail' placeholder='sample_email@domain.com' autofocus/>" +
-				"</label>",
+			templateUrl: "templates/settings/set-my-email.html",
 			title: "Enter Your Email Address",
 			subTitle: "Please enter a valid email address",
 			scope: $scope,
@@ -341,7 +400,7 @@ app.controller("SettingsController", function ($scope, $ionicPopup, Settings) {
 
 	$scope.setMinutesPerUnit = function () {
 		$ionicPopup.show({
-			template: "<label class='item item-input'><input type='number' ng-model='tempSettings.minutesPerUnit' placeholder='0' autofocus/></label>",
+			templateUrl: "templates/settings/set-minutes-per-unit.html",
 			title: "Enter Minutes Per Unit",
 			subTitle: "Maximum allowable value is 60",
 			scope: $scope,
@@ -366,6 +425,10 @@ app.controller("SettingsController", function ($scope, $ionicPopup, Settings) {
 			}
 		});
 	};
+
+	$scope.$watch("tempSettings.minutesPerUnit", function (newValue, oldValue) {
+		$scope.tempSettings.minutesPerUnit = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > TIMER_LIMITS.minutes || newValue < 0) ? 0 : parseInt(newValue);
+	});
 });
 
 app.controller("StatsController", function ($scope) {

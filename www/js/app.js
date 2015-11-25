@@ -35,7 +35,16 @@ app.constant("TIME_ENTRY_STATUSES", {
 
 app.constant("DEFAULT_SETTINGS", {
 	timerModeAsDefault: false,
-	minutesPerUnit: 6
+	minutesPerUnit: 6,
+	recipientEmails: [{}]
+});
+
+app.constant("TIMER_LIMITS", {
+	units: 99,
+	hours: 99,
+	minutes: 60,
+	seconds: 60,
+	milliseconds: 1000
 });
 
 app.config(function ($stateProvider, $urlRouterProvider, APP_STATES) {
@@ -65,7 +74,7 @@ app.config(function ($stateProvider, $urlRouterProvider, APP_STATES) {
 		url: "/settings",
 		views: {
 			"main": {
-				templateUrl: "templates/settings.html"
+				templateUrl: "templates/settings/index.html"
 			}
 		}
 	})

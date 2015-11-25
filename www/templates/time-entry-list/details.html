@@ -10,7 +10,12 @@
 		<div class="list card wrapping-list">
 			<ion-item><strong>Client Name:</strong> {{ timeEntry.clientName  || "..."  }}</ion-item>
 			<ion-item><strong>Sent As:</strong> <strong ng-class="(timeEntry.status == TIME_ENTRY_STATUSES.final) ? 'balanced' : 'energized'">{{ timeEntry.status }}</strong></ion-item>
-			<ion-item><strong>Recipient Email:</strong> {{ timeEntry.recipientEmail  || "..."  }}</ion-item>
+			<ion-item>
+				<strong>Recipient Emails:</strong>
+				<span ng-repeat="email in timeEntry.recipientEmails"> {{ email.value }}
+					<span ng-if="$index < timeEntry.recipientEmails.length - 1">, </span>
+				</span>
+			</ion-item>
 			<ion-item><strong>Date Sent:</strong> {{ timeEntry.dateSent | date:"MM/dd/yyyy" }}</ion-item>
 			<ion-item><strong>Length:</strong> {{ timeEntry.units + " " + ((timeEntry.units <= 1) ? "unit" : "units") + ", " + (timeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (timeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (timeEntry.seconds | fixedNumLength:2) }}</ion-item>
 			<ion-item><strong>Matter:</strong> {{ timeEntry.matter  || "..."  }}</ion-item>

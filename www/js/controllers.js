@@ -209,7 +209,7 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 					}
 
 					if(index < 2) {
-						$scope.currentTimeEntry.recipientEmail = settings.recipientEmail;
+						$scope.currentTimeEntry.recipientEmails = settings.recipientEmails;
 						$scope.currentTimeEntry.dateSent = new Date();
 
 						TimeEntries.add($scope.currentTimeEntry);

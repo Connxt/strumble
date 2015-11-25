@@ -1,6 +1,6 @@
 /* Empty. Add your own CSS if you like */
 .timer-display {
-	padding: 5% 0px 5% 0px;
+	padding: 0% 0px 5% 0px;
 	margin: 5% 0px 5% 0px;
 	font-size: 4em;
 }
@@ -13,4 +13,33 @@ div.footer-button button.button.button-full {
 .wrapping-list .item-content, .wrapping-list .item {
 	overflow: initial;
 	white-space: initial;
+}
+
+div.timer-display > ul{
+	/*background: red;*/
+	position: relative;
+}
+div.timer-display > ul > li{
+	display: inline-block;
+	/*background: blue;*/
+	width: auto;
+	position: relative;
+}
+div.timer-display > ul > li > h1{
+	font-size: 60px;
+	color: #323841;
+}
+div.timer-display > ul > li > ul > li > h5{
+	font-size: 15px;
+	color: #323841;
+}
+div.timer-display > ul > li > ul > li{
+	/*background: red;*/
+	position: absolute;
+	width: 100%;
+	margin-top:10px;
+}
+div.timer-display > ul{
+	/*background: red;*/
+	/*display: inline;*/
 }

@@ -16,7 +16,26 @@
 
 			<div ng-show="currentTimeEntry.isTimerMode" class="text-center">
 				<label class="item">
-					<div class="timer-display">{{ currentTimeEntry.units | fixedNumLength:2 }} {{ (currentTimeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (currentTimeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (currentTimeEntry.seconds | fixedNumLength:2) }}</div>
+					<div class="timer-display">
+						<ul>
+							<li>
+								<ul><li><h5>Units</h5></li></ul>
+								<h1>{{ (currentTimeEntry.units | fixedNumLength:2) }}</h1> 
+							</li>
+							<li>
+								<ul><li><h5>Hour</h5></li></ul>
+								<h1>{{ (currentTimeEntry.hours | fixedNumLength:2) }}</h1> 
+							</li>
+							<li>
+								<ul><li><h5>Minutes</h5></li></ul>
+								<h1>{{(currentTimeEntry.minutes | fixedNumLength:2)}}</h1> 
+							</li>
+							<li>
+								<ul><li><h5>Seconds</h5></li></ul>
+								<h1>{{(currentTimeEntry.seconds | fixedNumLength:2)}}</h1> 
+							</li>
+						</ul>
+					<!-- {{ currentTimeEntry.units | fixedNumLength:2 }} {{ (currentTimeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (currentTimeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (currentTimeEntry.seconds | fixedNumLength:2) }} --></div>
 				</label>
 				<div class="button-bar">
 					<button class="button" ng-class="isPlaying ? &apos;button-assertive icon ion-pause&apos; : &apos;button-positive icon ion-play&apos;" ng-click="toggleTimer(isPlaying)"></button>

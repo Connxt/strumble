@@ -17,6 +17,7 @@ div.footer-button button.button.button-full {
 div.timer-display{
 	display: table;
 	margin: 0 auto;
+	width: 100%;
 }
 
 div.timer-display > ul{
@@ -25,9 +26,10 @@ div.timer-display > ul{
 }
 div.timer-display > ul > li{
 	float: left;
-	width: 80px;
+	width: 25%;
 	margin: 0px auto;
 	position: relative;
+	/*background: red;*/
 }
 div.timer-display > ul > li > h1{
 	font-size: 0.9em;

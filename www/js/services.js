@@ -147,3 +147,21 @@ app.factory("Timer", function () {
 		isPlaying: false
 	};
 });
+
+app.factory("Email", function ($http) {
+	var apiEndPoint = "http://strumble.connxt.net/send_email.php";
+
+	var self = this;
+
+	self.send = function (timeEntryData) {
+		var config = {
+			headers: {
+				"Content-Type": "text/plain"
+			}
+		};
+		
+		return $http.post(apiEndPoint, timeEntryData, config);
+	};
+
+	return self;
+});

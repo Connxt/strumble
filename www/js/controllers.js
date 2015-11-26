@@ -135,7 +135,7 @@ app.controller("MoreInfoController", function ($scope, CurrentTimeEntry) {
 	$scope.currentTimeEntry = CurrentTimeEntry;
 });
 
-app.controller("SendController", function ($scope, $state, $ionicActionSheet, $ionicPopup, $ionicModal, APP_STATES, TIME_ENTRY_STATUSES, TimeEntries, AccumulatedTime, CurrentTimeEntry, Settings, Timer, fixedNumLengthFilter) {
+app.controller("SendController", function ($scope, $state, $ionicActionSheet, $ionicPopup, $ionicModal, APP_STATES, TIME_ENTRY_STATUSES, TimeEntries, AccumulatedTime, CurrentTimeEntry, Settings, Email, Timer, fixedNumLengthFilter) {
 	$scope.currentTimeEntry = CurrentTimeEntry;
 	$scope.timerService = Timer;
 
@@ -213,30 +213,35 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 						$scope.currentTimeEntry.recipientEmails = settings.recipientEmails;
 						$scope.currentTimeEntry.dateSent = new Date();
 
-						TimeEntries.add($scope.currentTimeEntry);
-						AccumulatedTime.add({
-							units: $scope.currentTimeEntry.units,
-							hours: $scope.currentTimeEntry.hours,
-							minutes: $scope.currentTimeEntry.minutes,
-							seconds: $scope.currentTimeEntry.seconds,
+						Email.send($scope.currentTimeEntry).success(function (data, status, headers, config) {
+							TimeEntries.add($scope.currentTimeEntry);
+							AccumulatedTime.add({
+								units: $scope.currentTimeEntry.units,
+								hours: $scope.currentTimeEntry.hours,
+								minutes: $scope.currentTimeEntry.minutes,
+								seconds: $scope.currentTimeEntry.seconds,
+							});
+							
+							// resets the CurrentTimeEntry
+							CurrentTimeEntry.units = 0;
+							CurrentTimeEntry.hours = 0;
+							CurrentTimeEntry.minutes = 0;
+							CurrentTimeEntry.seconds = 0;
+							CurrentTimeEntry.milliseconds = 0;
+							CurrentTimeEntry.clientName = "";
+							CurrentTimeEntry.matter = "";
+							CurrentTimeEntry.phase = "";
+							CurrentTimeEntry.narration = "";
+
+							delete CurrentTimeEntry.recipientEmail;
+							delete CurrentTimeEntry.dateSent;
+
+							$scope.previewModal.hide();
+							$state.go(APP_STATES.main);
+							alert(data + " " + status);
+						}).error(function (data, status, headers, config) {
+							alert(data + " " + status);
 						});
-						
-						// resets the CurrentTimeEntry
-						CurrentTimeEntry.units = 0;
-						CurrentTimeEntry.hours = 0;
-						CurrentTimeEntry.minutes = 0;
-						CurrentTimeEntry.seconds = 0;
-						CurrentTimeEntry.milliseconds = 0;
-						CurrentTimeEntry.clientName = "";
-						CurrentTimeEntry.matter = "";
-						CurrentTimeEntry.phase = "";
-						CurrentTimeEntry.narration = "";
-
-						delete CurrentTimeEntry.recipientEmail;
-						delete CurrentTimeEntry.dateSent;
-
-						$scope.previewModal.hide();
-						$state.go(APP_STATES.main);
 					}
 
 					return true;

@@ -149,7 +149,7 @@ app.factory("Timer", function () {
 });
 
 app.factory("Email", function ($http) {
-	var apiEndPoint = "http://strumble.connxt.net/send_email.php";
+	var apiEndPoint = "http://strumble.connxt.net/mail_api/";
 
 	var self = this;
 
@@ -159,7 +159,7 @@ app.factory("Email", function ($http) {
 				"Content-Type": "text/plain"
 			}
 		};
-		
+
 		return $http.post(apiEndPoint, timeEntryData, config);
 	};
 

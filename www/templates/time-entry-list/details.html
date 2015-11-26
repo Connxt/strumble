@@ -9,7 +9,7 @@
 	<ion-content class="has-header" ng-controller="TimeEntryDetailsController">
 		<div class="list card wrapping-list">
 			<ion-item><strong>Client Name:</strong> {{ timeEntry.clientName  || "..."  }}</ion-item>
-			<ion-item><strong>Sent As:</strong> <strong ng-class="(timeEntry.status == TIME_ENTRY_STATUSES.final) ? 'balanced' : 'energized'">{{ timeEntry.status }}</strong></ion-item>
+			<ion-item><strong>Sent As:</strong> <strong ng-class="(timeEntry.sentAs == TIME_ENTRY_STATUSES.final) ? 'balanced' : 'energized'">{{ timeEntry.status }}</strong></ion-item>
 			<ion-item>
 				<strong>Recipient Emails:</strong>
 				<span ng-repeat="email in timeEntry.recipientEmails"> {{ email.value }}

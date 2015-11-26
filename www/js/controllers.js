@@ -47,19 +47,19 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 	$scope.currentTimeEntry.isTimerMode = settings.timerModeAsDefault;
 
 	$scope.$watch("currentTimeEntry.units", function (newValue, oldValue) {
-		$scope.currentTimeEntry.units = (!newValue || newValue > TIMER_LIMITS.units || newValue < 0) ? "" : parseInt(newValue);
+		$scope.currentTimeEntry.units = (newValue === undefined || newValue === null || newValue > TIMER_LIMITS.units || newValue < 0) ? "" : parseInt(newValue);
 	});
 
 	$scope.$watch("currentTimeEntry.hours", function (newValue, oldValue) {
-		$scope.currentTimeEntry.hours = (!newValue || newValue > TIMER_LIMITS.hours || newValue < 0) ? "" : parseInt(newValue);
+		$scope.currentTimeEntry.hours = (newValue === undefined || newValue === null || newValue > TIMER_LIMITS.hours || newValue < 0) ? "" : parseInt(newValue);
 	});
 
 	$scope.$watch("currentTimeEntry.minutes", function (newValue, oldValue) {
-		$scope.currentTimeEntry.minutes = (!newValue || newValue > TIMER_LIMITS.minutes || newValue < 0) ? "" : parseInt(newValue);
+		$scope.currentTimeEntry.minutes = (newValue === undefined || newValue === null || newValue > TIMER_LIMITS.minutes || newValue < 0) ? "" : parseInt(newValue);
 	});
 
 	$scope.$watch("currentTimeEntry.seconds", function (newValue, oldValue) {
-		$scope.currentTimeEntry.seconds = (!newValue || newValue > TIMER_LIMITS.seconds || newValue < 0) ? "" : parseInt(newValue);
+		$scope.currentTimeEntry.seconds = (newValue === undefined || newValue === null || newValue > TIMER_LIMITS.seconds || newValue < 0) ? "" : parseInt(newValue);
 	});
 
 	$scope.$watch("timerService.isPlaying", function (newValue, oldValue) {
@@ -143,7 +143,7 @@ app.controller("MoreInfoController", function ($scope, CurrentTimeEntry) {
 	$scope.currentTimeEntry = CurrentTimeEntry;
 });
 
-app.controller("SendController", function ($scope, $state, $ionicActionSheet, $ionicPopup, $ionicModal, APP_STATES, TIME_ENTRY_STATUSES, TimeEntries, AccumulatedTime, CurrentTimeEntry, Settings, Email, Timer, fixedNumLengthFilter) {
+app.controller("SendController", function ($scope, $state, $ionicActionSheet, $ionicPopup, $ionicModal, $ionicLoading, APP_STATES, TIME_ENTRY_STATUSES, TimeEntries, AccumulatedTime, CurrentTimeEntry, Settings, Email, Timer, fixedNumLengthFilter) {
 	$scope.currentTimeEntry = CurrentTimeEntry;
 	$scope.timerService = Timer;
 
@@ -217,9 +217,20 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 					}
 
 					if(index < 2) {
+						if(! $scope.currentTimeEntry.clientName) $scope.currentTimeEntry.clientName = "";
+						if(! $scope.currentTimeEntry.phase) $scope.currentTimeEntry.phase = "";
+						if(! $scope.currentTimeEntry.matter) $scope.currentTimeEntry.matter = "";
+						if(! $scope.currentTimeEntry.narration) $scope.currentTimeEntry.narration = "";
+						if(! $scope.currentTimeEntry.units) $scope.currentTimeEntry.units = 0;
+						if(! $scope.currentTimeEntry.hours) $scope.currentTimeEntry.hours = 0;
+						if(! $scope.currentTimeEntry.minutes) $scope.currentTimeEntry.minutes = 0;
+						if(! $scope.currentTimeEntry.seconds) $scope.currentTimeEntry.seconds = 0;
+
 						$scope.currentTimeEntry.myDetails = settings.myDetails;
 						$scope.currentTimeEntry.recipientEmails = settings.recipientEmails;
 						$scope.currentTimeEntry.dateSent = new Date();
+
+						$ionicLoading.show({ template: "Sending email..." });
 
 						Email.send($scope.currentTimeEntry).success(function (data, status, headers, config) {
 							TimeEntries.add($scope.currentTimeEntry);
@@ -247,11 +258,14 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 							$scope.previewModal.hide();
 							$state.go(APP_STATES.main);
 
+							$ionicLoading.hide();
 							$ionicPopup.alert({
 								title: "Success!",
 								template: "Time entry has been saved and sent successfully."
 							});
 						}).error(function (data, status, headers, config) {
+
+							$ionicLoading.hide();
 							$ionicPopup.alert({
 								title: "Sending Failed",
 								template: "An unknown error occured. <p><i class='ion-ios-checkmark-empty'></i> Make sure you have a stable internet connection.</p>"
@@ -401,7 +415,7 @@ app.controller("SettingsController", function ($scope, $ionicPopup, Settings, TI
 	};
 
 	$scope.$watch("tempSettings.minutesPerUnit", function (newValue, oldValue) {
-		$scope.tempSettings.minutesPerUnit = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > TIMER_LIMITS.minutes || newValue < 0) ? 0 : parseInt(newValue);
+		$scope.tempSettings.minutesPerUnit = (!newValue || newValue > TIMER_LIMITS.minutes || newValue < 0) ? "" : parseInt(newValue);
 	});
 });
 

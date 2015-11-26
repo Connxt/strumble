@@ -200,10 +200,10 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 					var settings = Settings.get()
 
 					if(index == 0) {
-						$scope.currentTimeEntry.status = TIME_ENTRY_STATUSES.final;
+						$scope.currentTimeEntry.sentAs = TIME_ENTRY_STATUSES.final;
 					}
 					else if(index == 1) {
-						$scope.currentTimeEntry.status = TIME_ENTRY_STATUSES.draft;
+						$scope.currentTimeEntry.sentAs = TIME_ENTRY_STATUSES.draft;
 					}
 					else if(index == 2) {
 						$scope.preview();

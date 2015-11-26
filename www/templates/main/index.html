@@ -20,19 +20,19 @@
 						<ul>
 							<li>
 								<ul><li><h5>Units</h5></li></ul>
-								<h1>{{ currentTimeEntry.units | fixedNumLength:2 }}</h1> 
+								<h1>{{ (currentTimeEntry.units | fixedNumLength:2) || "00" }}</h1>
 							</li>
 							<li>
 								<ul><li><h5>Hours</h5></li></ul>
-								<h1>{{ currentTimeEntry.hours | fixedNumLength:2 }}</h1> 
+								<h1>{{ (currentTimeEntry.hours | fixedNumLength:2) || "00" }}</h1>
 							</li>
 							<li>
 								<ul><li><h5>Minutes</h5></li></ul>
-								<h1>{{ currentTimeEntry.minutes | fixedNumLength:2 }}</h1> 
+								<h1>{{ (currentTimeEntry.minutes | fixedNumLength:2) || "00" }}</h1>
 							</li>
 							<li>
 								<ul><li><h5>Seconds</h5></li></ul>
-								<h1>{{ currentTimeEntry.seconds | fixedNumLength:2 }}</h1> 
+								<h1>{{ (currentTimeEntry.seconds | fixedNumLength:2) || "00" }}</h1>
 							</li>
 						</ul>
 					</div>

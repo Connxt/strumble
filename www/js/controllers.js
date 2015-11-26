@@ -34,7 +34,7 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 	$scope.currentTimeEntry.milliseconds = 0;
 	$scope.isPlaying = false;
 	$scope.timerService = Timer;
-
+	
 	if(Object.keys(settings).length === 0) {
 		settings.timerModeAsDefault = DEFAULT_SETTINGS.timerModeAsDefault;
 		settings.minutesPerUnit = DEFAULT_SETTINGS.minutesPerUnit;
@@ -47,19 +47,19 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 	$scope.currentTimeEntry.isTimerMode = settings.timerModeAsDefault;
 
 	$scope.$watch("currentTimeEntry.units", function (newValue, oldValue) {
-		$scope.currentTimeEntry.units = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > TIMER_LIMITS.units || newValue < 0) ? 0 : parseInt(newValue);
+		$scope.currentTimeEntry.units = (!newValue || newValue > TIMER_LIMITS.units || newValue < 0) ? "" : parseInt(newValue);
 	});
 
 	$scope.$watch("currentTimeEntry.hours", function (newValue, oldValue) {
-		$scope.currentTimeEntry.hours = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > TIMER_LIMITS.hours || newValue < 0) ? 0 : parseInt(newValue);
+		$scope.currentTimeEntry.hours = (!newValue || newValue > TIMER_LIMITS.hours || newValue < 0) ? "" : parseInt(newValue);
 	});
 
 	$scope.$watch("currentTimeEntry.minutes", function (newValue, oldValue) {
-		$scope.currentTimeEntry.minutes = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > TIMER_LIMITS.minutes || newValue < 0) ? 0 : parseInt(newValue);
+		$scope.currentTimeEntry.minutes = (!newValue || newValue > TIMER_LIMITS.minutes || newValue < 0) ? "" : parseInt(newValue);
 	});
 
 	$scope.$watch("currentTimeEntry.seconds", function (newValue, oldValue) {
-		$scope.currentTimeEntry.seconds = (newValue === undefined || newValue === null || isNaN(newValue) || newValue > TIMER_LIMITS.seconds || newValue < 0) ? 0 : parseInt(newValue);
+		$scope.currentTimeEntry.seconds = (!newValue || newValue > TIMER_LIMITS.seconds || newValue < 0) ? "" : parseInt(newValue);
 	});
 
 	$scope.$watch("timerService.isPlaying", function (newValue, oldValue) {
@@ -130,6 +130,13 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 		$scope.currentTimeEntry.seconds = 0;
 		$scope.currentTimeEntry.milliseconds = 0;
 	};
+
+	// $scope.clientNames = [];
+	// $scope.search = function () {
+	// 	Search.searchClientName($scope.currentTimeEntry.clientName).then(function (matches) {
+	// 		$scope.clientNames = matches;
+	// 	});
+	// };
 });
 
 app.controller("MoreInfoController", function ($scope, CurrentTimeEntry) {

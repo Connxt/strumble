@@ -149,9 +149,8 @@ app.factory("Timer", function () {
 });
 
 app.factory("Email", function ($http) {
-	var apiEndPoint = "http://strumble.connxt.net/mail_api/";
-
 	var self = this;
+	var apiEndPoint = "http://strumble.connxt.net/mail_api/";
 
 	self.send = function (timeEntryData) {
 		var config = {
@@ -165,3 +164,34 @@ app.factory("Email", function ($http) {
 
 	return self;
 });
+
+// app.factory("Search", function ($q, $timeout) {
+// 	var self = this,
+// 		timeEntries = window.localStorage["strumble.timeEntries"];
+
+// 	if(timeEntries) {
+// 		timeEntries = angular.fromJson(timeEntries);
+// 	}
+// 	else {
+// 		timeEntries = [];
+// 	}
+
+// 	self.searchClientName = function (clientName) {
+// 		var deferred = $q.defer(),
+// 			matches = timeEntries.filter(function (timeEntry) {
+// 			if(timeEntry.clientName) {
+// 				if(timeEntry.clientName.toLowerCase().indexOf(clientName.toLowerCase()) !== -1) {
+// 					return true;
+// 				}
+// 			}
+// 		});
+
+// 		$timeout(function () {
+// 			deferred.resolve(matches);
+// 		}, 100);
+
+// 		return deferred.promise;
+// 	};
+
+// 	return self;
+// });

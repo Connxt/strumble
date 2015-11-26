@@ -47,19 +47,19 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 	$scope.currentTimeEntry.isTimerMode = settings.timerModeAsDefault;
 
 	$scope.$watch("currentTimeEntry.units", function (newValue, oldValue) {
-		$scope.currentTimeEntry.units = (newValue === undefined || newValue === null || newValue > TIMER_LIMITS.units || newValue < 0) ? "" : parseInt(newValue);
+		$scope.currentTimeEntry.units = (newValue === undefined || newValue === null || newValue > TIMER_LIMITS.units || newValue < 0) ? "" : +parseInt(newValue);
 	});
 
 	$scope.$watch("currentTimeEntry.hours", function (newValue, oldValue) {
-		$scope.currentTimeEntry.hours = (newValue === undefined || newValue === null || newValue > TIMER_LIMITS.hours || newValue < 0) ? "" : parseInt(newValue);
+		$scope.currentTimeEntry.hours = (newValue === undefined || newValue === null || newValue > TIMER_LIMITS.hours || newValue < 0) ? "" : +parseInt(newValue);
 	});
 
 	$scope.$watch("currentTimeEntry.minutes", function (newValue, oldValue) {
-		$scope.currentTimeEntry.minutes = (newValue === undefined || newValue === null || newValue > TIMER_LIMITS.minutes || newValue < 0) ? "" : parseInt(newValue);
+		$scope.currentTimeEntry.minutes = (newValue === undefined || newValue === null || newValue > TIMER_LIMITS.minutes || newValue < 0) ? "" : +parseInt(newValue);
 	});
 
 	$scope.$watch("currentTimeEntry.seconds", function (newValue, oldValue) {
-		$scope.currentTimeEntry.seconds = (newValue === undefined || newValue === null || newValue > TIMER_LIMITS.seconds || newValue < 0) ? "" : parseInt(newValue);
+		$scope.currentTimeEntry.seconds = (newValue === undefined || newValue === null || newValue > TIMER_LIMITS.seconds || newValue < 0) ? "" : +parseInt(newValue);
 	});
 
 	$scope.$watch("timerService.isPlaying", function (newValue, oldValue) {
@@ -71,6 +71,10 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 		else {
 			timer = $interval(function () {
 				$scope.currentTimeEntry.milliseconds += 100;
+				if(! $scope.currentTimeEntry.units) $scope.currentTimeEntry.units = 0;
+				if(! $scope.currentTimeEntry.hours) $scope.currentTimeEntry.hours = 0;
+				if(! $scope.currentTimeEntry.minutes) $scope.currentTimeEntry.minutes = 0;
+				if(! $scope.currentTimeEntry.seconds) $scope.currentTimeEntry.seconds = 0;
 
 				// increments seconds
 				if($scope.currentTimeEntry.milliseconds >= TIMER_LIMITS.milliseconds) {
@@ -130,13 +134,6 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 		$scope.currentTimeEntry.seconds = 0;
 		$scope.currentTimeEntry.milliseconds = 0;
 	};
-
-	// $scope.clientNames = [];
-	// $scope.search = function () {
-	// 	Search.searchClientName($scope.currentTimeEntry.clientName).then(function (matches) {
-	// 		$scope.clientNames = matches;
-	// 	});
-	// };
 });
 
 app.controller("MoreInfoController", function ($scope, CurrentTimeEntry) {
@@ -242,15 +239,15 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 							});
 							
 							// resets the CurrentTimeEntry
-							CurrentTimeEntry.units = 0;
-							CurrentTimeEntry.hours = 0;
-							CurrentTimeEntry.minutes = 0;
-							CurrentTimeEntry.seconds = 0;
-							CurrentTimeEntry.milliseconds = 0;
 							CurrentTimeEntry.clientName = "";
 							CurrentTimeEntry.matter = "";
 							CurrentTimeEntry.phase = "";
 							CurrentTimeEntry.narration = "";
+							CurrentTimeEntry.units = "";
+							CurrentTimeEntry.hours = "";
+							CurrentTimeEntry.minutes = "";
+							CurrentTimeEntry.seconds = "";
+							CurrentTimeEntry.milliseconds = "";
 
 							delete CurrentTimeEntry.recipientEmail;
 							delete CurrentTimeEntry.dateSent;

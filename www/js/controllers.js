@@ -161,9 +161,9 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 			errors = [],
 			errorMessage = "";
 
-		// if(settings.recipientEmail === undefined) {
-		// 	errors.push("Recipient Email");
-		// }
+		if(! (settings.myDetails.name && settings.myDetails.email)) {
+			errors.push("My Details");
+		}
 
 		if(Object.keys(settings.recipientEmails[0]).length === 0) {
 			errors.push("Recipient Emails");
@@ -209,6 +209,7 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 					}
 
 					if(index < 2) {
+						$scope.currentTimeEntry.myDetails = settings.myDetails;
 						$scope.currentTimeEntry.recipientEmails = settings.recipientEmails;
 						$scope.currentTimeEntry.dateSent = new Date();
 
@@ -219,29 +220,6 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 							minutes: $scope.currentTimeEntry.minutes,
 							seconds: $scope.currentTimeEntry.seconds,
 						});
-
-						// var timeEntry = TimeEntries.get(TimeEntries.getAll().length - 1);
-						
-						// var emailBody =
-						// 	"<strong>Client Name: </strong>" + (timeEntry.clientName === undefined) ? "..." : timeEntry.clientName + "<br />" +
-						// 	"<strong>Sent As: </strong>" + timeEntry.status + "<br />" +
-						// 	"<strong>Date Sent: </strong>" + timeEntry.dateSent + "<br />" +
-						// 	"<strong>Length: </strong>" + fixedNumLengthFilter(timeEntry.hours, 2) + ":" + fixedNumLengthFilter(timeEntry.minutes, 2) + ":" + fixedNumLengthFilter(timeEntry.seconds, 2) + "<br />" +
-						// 	"<strong>Matter: </strong>" + (timeEntry.matter === undefined) ? "..." : timeEntry.matter + "<br />" +
-						// 	"<strong>Phase: </strong>" + (timeEntry.phase === undefined) ? "..." : timeEntry.phase + "<br />" +
-						// 	"<strong>Narration: </strong>" + (timeEntry.narration === undefined) ? "..." : timeEntry.narration + "<br />";
-
-						// window.plugin.email.open({
-						// 	to: [settings.recipientEmail],
-						// 	cc: [],
-						// 	bcc: [],
-						// 	attachments: [],
-						// 	subject: timeEntry.clientName + " - " + timeEntry.status,
-						// 	body: emailBody,
-						// 	isHtml: true
-						// }, function () {
-						// 	console.log("email view dismissed");
-						// }, this);
 						
 						// resets the CurrentTimeEntry
 						CurrentTimeEntry.units = 0;
@@ -287,11 +265,13 @@ app.controller("SettingsController", function ($scope, $ionicPopup, Settings, TI
 	$scope.settings = Settings.get();
 	$scope.tempSettings = Settings.get();
 
-	$scope.setRecipientEmail = function () {
+	$scope.setMyDetails = function () {
+		$scope.tempSettings = Settings.get();
+
 		$ionicPopup.show({
-			templateUrl: "templates/settings/set-recipient-email.html",
-			title: "Enter Recipient Email",
-			subTitle: "Please enter a valid email address",
+			templateUrl: "templates/settings/set-my-details.html",
+			title: "Enter Your Mailing Details",
+			subTitle: "Please enter your correct information.",
 			scope: $scope,
 			buttons: [{
 				text: "Cancel"
@@ -299,7 +279,7 @@ app.controller("SettingsController", function ($scope, $ionicPopup, Settings, TI
 				text: "Save",
 				type: "button-positive",
 				onTap: function (e) {
-					if(!$scope.tempSettings.recipientEmail) {
+					if(! ($scope.tempSettings.myDetails.name && $scope.tempSettings.myDetails.email)) {
 						e.preventDefault();
 					}
 					else {
@@ -316,6 +296,8 @@ app.controller("SettingsController", function ($scope, $ionicPopup, Settings, TI
 	};
 
 	$scope.setRecipientEmails = function () {
+		$scope.tempSettings = Settings.get();
+		
 		$ionicPopup.show({
 			templateUrl: "templates/settings/set-recipient-emails.html",
 			title: "Enter Recipient Emails",
@@ -363,34 +345,6 @@ app.controller("SettingsController", function ($scope, $ionicPopup, Settings, TI
 
 	$scope.removeRecipientEmail = function (index) {
 		$scope.tempSettings.recipientEmails.splice(index, 1);
-	};
-
-	$scope.setMyEmail = function () {
-		$ionicPopup.show({
-			templateUrl: "templates/settings/set-my-email.html",
-			title: "Enter Your Email Address",
-			subTitle: "Please enter a valid email address",
-			scope: $scope,
-			buttons: [{
-				text: "Cancel"
-			}, {
-				text: "Save",
-				type: "button-positive",
-				onTap: function (e) {
-					if(! $scope.tempSettings.myEmail) {
-						e.preventDefault();
-					}
-					else {
-						return true;
-					}
-				}
-			}]
-		}).then(function (result) {
-			if(result) {
-				Settings.set($scope.tempSettings);
-				$scope.settings = Settings.get();
-			}
-		});
 	};
 
 	$scope.setDefaultMode = function () {

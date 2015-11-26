@@ -38,6 +38,7 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 	if(Object.keys(settings).length === 0) {
 		settings.timerModeAsDefault = DEFAULT_SETTINGS.timerModeAsDefault;
 		settings.minutesPerUnit = DEFAULT_SETTINGS.minutesPerUnit;
+		settings.myDetails = DEFAULT_SETTINGS.myDetails;
 		settings.recipientEmails = DEFAULT_SETTINGS.recipientEmails;
 
 		Settings.set(settings);
@@ -238,9 +239,16 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 
 							$scope.previewModal.hide();
 							$state.go(APP_STATES.main);
-							alert(data + " " + status);
+
+							$ionicPopup.alert({
+								title: 'Success!',
+								template: 'Time entry has been saved and sent successfully.'
+							});
 						}).error(function (data, status, headers, config) {
-							alert(data + " " + status);
+							$ionicPopup.alert({
+								title: 'Failed!',
+								template: 'An unknown error occured.'
+							});
 						});
 					}
 

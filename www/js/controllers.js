@@ -241,13 +241,13 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 							$state.go(APP_STATES.main);
 
 							$ionicPopup.alert({
-								title: 'Success!',
-								template: 'Time entry has been saved and sent successfully.'
+								title: "Success!",
+								template: "Time entry has been saved and sent successfully."
 							});
 						}).error(function (data, status, headers, config) {
 							$ionicPopup.alert({
-								title: 'Failed!',
-								template: 'An unknown error occured.'
+								title: "Sending Failed",
+								template: "An unknown error occured. <p><i class='ion-ios-checkmark-empty'></i> Make sure you have a stable internet connection.</p>"
 							});
 						});
 					}

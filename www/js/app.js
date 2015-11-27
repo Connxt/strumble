@@ -99,8 +99,7 @@ app.config(function ($stateProvider, $urlRouterProvider, APP_STATES) {
 		url: "/time-entry-details/:timeEntryId",
 		views: {
 			"main": {
-				templateUrl: "templates/time-entry-list/details.html",
-				controller: "TimeEntryDetailsController"
+				templateUrl: "templates/time-entry-list/details.html"
 			}
 		}
 	});

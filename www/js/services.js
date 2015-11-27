@@ -73,13 +73,20 @@ app.factory("TimeEntries", function () {
 		return [];
 	};
 
-	self.get = function (index) {
-		var timeEntries = window.localStorage["strumble.timeEntries"];
+	self.get = function (timeEntryId) {
+		var timeEntries = angular.fromJson(window.localStorage["strumble.timeEntries"]),
+			timeEntry = {};
+		
 		if(timeEntries) {
-			return angular.fromJson(timeEntries)[index];
+			for(var i = 0; i < timeEntries.length; i++) {
+				if(timeEntries[i].id == timeEntryId) {
+					timeEntry = timeEntries[i];
+					break;
+				}
+			}
 		}
 
-		return {};
+		return timeEntry;
 	}
 
 	/**

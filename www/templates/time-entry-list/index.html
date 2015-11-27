@@ -24,8 +24,8 @@
 					{{ accumulatedTime.units + " " + ((accumulatedTime.units <= 1) ? "unit" : "units") + ", " + accumulatedTime.hours + &quot;:&quot; + (accumulatedTime.minutes | fixedNumLength:2)  + &quot;:&quot; + (accumulatedTime.seconds | fixedNumLength:2) }}
 				</h2>
 			</div>
-			<a class="item item-icon-right" ng-repeat="timeEntry in timeEntries | orderBy: '-dateSent'" ng-click="showDetails($index)">
-				<h2><strong>{{ timeEntry.clientName || "..." }}</strong> - <strong ng-class="(timeEntry.sentAs == TIME_ENTRY_STATUSES.final) ? 'balanced' : 'energized'">{{ timeEntry.status }}</strong></h2>
+			<a class="item item-icon-right" ng-repeat="timeEntry in timeEntries | orderBy: '-dateSent'" ng-click="showDetails(timeEntry.id)">
+				<h2><strong>{{ timeEntry.clientName || "..." }}</strong> - <strong ng-class="(timeEntry.sentAs == TIME_ENTRY_STATUSES.final) ? 'balanced' : 'energized'">{{ timeEntry.sentAs }}</strong></h2>
 				<span class="item-note">{{ timeEntry.dateSent | date:"MM/dd/yyyy" }}</span>
 				<h3><strong>Length:</strong> {{ timeEntry.units + " " + ((timeEntry.units <= 1) ? "unit" : "units") + ", " + (timeEntry.hours | fixedNumLength:2) + &quot;:&quot; + (timeEntry.minutes | fixedNumLength:2)  + &quot;:&quot; + (timeEntry.seconds | fixedNumLength:2) }}</h3>
 				<h3><strong>Matter:</strong> {{ timeEntry.matter || "..." }}</h3>

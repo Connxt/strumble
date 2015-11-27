@@ -69,6 +69,8 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 		}
 		// if the timer is not playing
 		else {
+			settings = Settings.get();
+
 			timer = $interval(function () {
 				$scope.currentTimeEntry.milliseconds += 100;
 				if(! $scope.currentTimeEntry.units) $scope.currentTimeEntry.units = 0;
@@ -226,6 +228,7 @@ app.controller("SendController", function ($scope, $state, $ionicActionSheet, $i
 						$scope.currentTimeEntry.myDetails = settings.myDetails;
 						$scope.currentTimeEntry.recipientEmails = settings.recipientEmails;
 						$scope.currentTimeEntry.dateSent = new Date();
+						$scope.currentTimeEntry.id = new Date();
 
 						$ionicLoading.show({ template: "Sending email..." });
 

@@ -128,10 +128,10 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 		$scope.isPlaying = true;
 		$scope.timerService.isPlaying = false;
 
-		$scope.currentTimeEntry.units = 0;
-		$scope.currentTimeEntry.hours = 0;
-		$scope.currentTimeEntry.minutes = 0;
-		$scope.currentTimeEntry.seconds = 0;
+		$scope.currentTimeEntry.units = "";
+		$scope.currentTimeEntry.hours = "";
+		$scope.currentTimeEntry.minutes = "";
+		$scope.currentTimeEntry.seconds = "";
 		$scope.currentTimeEntry.milliseconds = 0;
 	};
 });

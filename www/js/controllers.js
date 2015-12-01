@@ -47,7 +47,7 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 	$scope.currentTimeEntry.isTimerMode = settings.timerModeAsDefault;
 
 	$scope.$watch("currentTimeEntry.units", function (newValue, oldValue) {
-		$scope.currentTimeEntry.units = (newValue === undefined || newValue === null || newValue > TIMER_LIMITS.units || newValue < 0) ? "" : +parseInt(newValue);
+		$scope.currentTimeEntry.units = (newValue === undefined || newValue === null || newValue < 0) ? "" : +parseInt(newValue);
 	});
 
 	$scope.$watch("currentTimeEntry.hours", function (newValue, oldValue) {
@@ -102,7 +102,7 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 					$scope.currentTimeEntry.minutes = 0;
 				}
 
-				if($scope.currentTimeEntry.units >= TIMER_LIMITS.units || $scope.currentTimeEntry.hours >= TIMER_LIMITS.hours) {
+				if($scope.currentTimeEntry.hours >= TIMER_LIMITS.hours) {
 					$scope.timerService.isPlaying = false;
 				}
 			}, 100);

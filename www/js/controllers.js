@@ -381,10 +381,10 @@ app.controller("SettingsController", function ($scope, $ionicPopup, Settings, TI
 		$scope.tempSettings.recipientEmails.splice(index, 1);
 	};
 
-	$scope.setDefaultMode = function () {
-		Settings.set($scope.tempSettings);
+	$scope.$watch("settings.timerModeAsDefault", function (newValue, oldValue) {
+		Settings.set($scope.settings);
 		$scope.settings = Settings.get();
-	};
+	});
 
 	$scope.setMinutesPerUnit = function () {
 		$ionicPopup.show({

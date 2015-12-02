@@ -14,9 +14,11 @@
 			</ion-item>
 			<ion-item ng-click="setRecipientEmails()">
 				<h2>Recipient Emails</h2>
-				<span ng-repeat="email in settings.recipientEmails">{{ email.value }}<span ng-if="$index < settings.recipientEmails.length - 1">, </span></span>
+				<p>
+					<span ng-repeat="email in settings.recipientEmails">{{ email.value }}<span ng-if="$index < settings.recipientEmails.length - 1">, </span></span>
+				</p>
 			</ion-item>
-			<ion-toggle ng-model="settings.timerModeAsDefault" toggle-class="toggle-positive" ng-change="setDefaultMode()">Timer Mode As Default</ion-toggle>
+			<ion-toggle ng-model="settings.timerModeAsDefault" toggle-class="toggle-positive">Timer Mode As Default</ion-toggle>
 			<ion-item ng-click="setMinutesPerUnit()">
 				<h2>Minutes per unit</h2>
 				<p>{{ settings.minutesPerUnit || "..."}}</p>

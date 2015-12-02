@@ -157,7 +157,7 @@ app.factory("Timer", function () {
 
 app.factory("Email", function ($http) {
 	var self = this;
-	var apiEndPoint = "http://strumble.connxt.net/mail_api/";
+	var mailingPath = "http://strumble.connxt.net/mail_api/";
 
 	self.send = function (timeEntryData) {
 		var config = {
@@ -166,7 +166,7 @@ app.factory("Email", function ($http) {
 			}
 		};
 
-		return $http.post(apiEndPoint, timeEntryData, config);
+		return $http.post(mailingPath, timeEntryData, config);
 	};
 
 	return self;

@@ -14,7 +14,7 @@
 				<input type="text" placeholder="..." ng-model="currentTimeEntry.clientName">
 			</label>
 
-			<div ng-show="currentTimeEntry.isTimerMode" class="text-center">
+			<div ng-show="currentTimeEntry.isTimerMode" class="text-center" style="display: none;">
 				<label class="item">
 					<div class="timer-display">
 						<ul>
@@ -43,7 +43,7 @@
 				</div>
 			</div>
 
-			<div ng-hide="currentTimeEntry.isTimerMode">
+			<div ng-hide="currentTimeEntry.isTimerMode" style="display: none;">
 				<label class="item item-input">
 					<span class="input-label"><strong>Units</strong></span>
 					<input type="number" placeholder="0" ng-model="currentTimeEntry.units" />

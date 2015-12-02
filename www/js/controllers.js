@@ -36,7 +36,6 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 	$scope.timerService = Timer;
 	
 	if(Object.keys(settings).length === 0) {
-		$scope.currentTimeEntry.isTimerMode = DEFAULT_SETTINGS.timerModeAsDefault;
 		settings.timerModeAsDefault = DEFAULT_SETTINGS.timerModeAsDefault;
 		settings.minutesPerUnit = DEFAULT_SETTINGS.minutesPerUnit;
 		settings.myDetails = DEFAULT_SETTINGS.myDetails;
@@ -45,7 +44,7 @@ app.controller("TimerController", function ($scope, $state, $stateParams, $inter
 		Settings.set(settings);
 	}
 
-	// $scope.currentTimeEntry.isTimerMode = settings.timerModeAsDefault;
+	$scope.currentTimeEntry.isTimerMode = settings.timerModeAsDefault;
 
 	$scope.$watch("currentTimeEntry.units", function (newValue, oldValue) {
 		$scope.currentTimeEntry.units = (newValue === undefined || newValue === null || newValue < 0) ? "" : +parseInt(newValue);

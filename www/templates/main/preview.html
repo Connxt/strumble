@@ -5,9 +5,9 @@
 		<button class="button button-clear button-positive" ng-click="send(false)">Send</button>
 	</ion-header-bar>
 	<ion-content>
-		<div class="list card">
+		<div class="list card wrapping-list">
 			<ion-item><strong>Client Name:</strong> {{ currentTimeEntry.clientName || "..." }}</ion-item>
-			<ion-item><strong>Length:</strong> {{ currentTimeEntry.units || 0 + " " + ((currentTimeEntry.units <= 1) ? "unit" : "units") + ", " + ((currentTimeEntry.hours || 00) | fixedNumLength:2) + &quot;:&quot; + ((currentTimeEntry.minutes || 00) | fixedNumLength:2)  + &quot;:&quot; + ((currentTimeEntry.seconds || 00) | fixedNumLength:2) }}</ion-item>
+			<ion-item><strong>Length:</strong> {{ (currentTimeEntry.units || 0) + " " + (currentTimeEntry.units <= 1 || !currentTimeEntry.units ? "unit" : "units") + ", " + ((currentTimeEntry.hours || 00) | fixedNumLength:2) + &quot;:&quot; + ((currentTimeEntry.minutes || 00) | fixedNumLength:2)  + &quot;:&quot; + ((currentTimeEntry.seconds || 00) | fixedNumLength:2) }}</ion-item>
 			<ion-item><strong>Matter:</strong> {{ currentTimeEntry.matter || "..." }}</ion-item>
 			<ion-item><strong>Phase:</strong> {{ currentTimeEntry.phase || "..." }}</ion-item>
 			<ion-item><strong>Narration:</strong> {{ currentTimeEntry.narration || "..." }}</ion-item>

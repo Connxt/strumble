@@ -34,7 +34,7 @@ app.constant("TIME_ENTRY_STATUSES", {
 });
 
 app.constant("DEFAULT_SETTINGS", {
-	timerModeAsDefault: false,
+	timerModeAsDefault: true,
 	minutesPerUnit: 6,
 	myDetails: {},
 	recipientEmails: [{}]

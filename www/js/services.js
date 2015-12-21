@@ -6,8 +6,9 @@
 	})
 
 	.factory("TimeEntryService", function ($interval, Settings) {
-		var timer,
-			_milliseconds = 0; // used only in timerMode
+		var timer;
+		// var timer,
+		// 	this.milliseconds = 0; // used only in timerMode
 
 		return {
 			isTimerMode: false,
@@ -48,15 +49,16 @@
 			},
 			timerMode: {
 				isTimerPlaying: false,
+				milliseconds: 0,
 				getTotalMillis: function () {
-					return _milliseconds;
+					return this.milliseconds;
 				},
 				getTime: function () {
 					var units,
 						hours,
 						minutes,
 						seconds,
-						milliseconds = _milliseconds;
+						milliseconds = this.milliseconds;
 
 					seconds = Math.floor(milliseconds / 1000);
 					milliseconds = milliseconds % 1000;
@@ -64,7 +66,7 @@
 					minutes = Math.floor(seconds / 60);
 					seconds = seconds % 60;
 
-					if(_milliseconds >= 1) {
+					if(this.milliseconds >= 1) {
 						units = Math.floor(minutes / Settings.getMinutesPerUnit()) + 1;
 					}
 					else {
@@ -87,7 +89,7 @@
 					var ctx = this;
 
 					timer = $interval(function () {
-						_milliseconds += 100;
+						this.milliseconds += 100;
 						console.log(ctx.getTime());
 					}, 100);
 				},
@@ -95,7 +97,7 @@
 					$interval.cancel(timer);
 				},
 				clear: function () {
-					_milliseconds = 0;
+					this.milliseconds = 0;
 				}
 			}
 		};

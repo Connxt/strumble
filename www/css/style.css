@@ -49,3 +49,22 @@ div.timer-display > ul{
 	/*background: red;*/
 	/*display: inline;*/
 }
+
+/**
+ * for the card accordion
+ */
+.card .item.item-accordion {
+	line-height: 38px;
+	padding-top: 0;
+	padding-bottom: 0;
+	transition: 0.1s all linear;
+}
+
+.card .item.item-accordion.ng-hide {
+	line-height: 0px;
+}
+
+.card .item.item-accordion.ng-hide-add,
+.card .item.item-accordion.ng-hide-remove {
+	display: block !important;
+}

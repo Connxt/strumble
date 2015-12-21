@@ -1,74 +1,69 @@
-<ion-pane>
-	<ion-header-bar class="bar-positive" ng-controller="HeaderController">
-		<h1 class="title">Strumble</h1>
-		<div class="buttons">
-			<button class="button button-icon icon ion-ios-more-outline" ng-click="openPopover($event)"></button>
-		</div>
-	</ion-header-bar>
-
-	<ion-content class="has-header" ng-controller="TimerController">
-		<ion-toggle ng-model="currentTimeEntry.isTimerMode" toggle-class="toggle-positive" ng-change="toggleMode()">Timer Mode</ion-toggle>
-		<div class="card" style="padding-bottom: 0px;">
-			<label class="item item-input item-stacked-label">
-				<span class="input-label">Client Name</span>
-				<input type="text" placeholder="..." ng-model="currentTimeEntry.clientName">
-			</label>
-
-			<div ng-show="currentTimeEntry.isTimerMode" class="text-center">
-				<label class="item">
-					<div class="timer-display">
-						<ul>
-							<li>
-								<ul><li><h5>Units</h5></li></ul>
-								<h1>{{ (currentTimeEntry.units | fixedNumLength:2) || "00" }}</h1>
-							</li>
-							<li>
-								<ul><li><h5>Hours</h5></li></ul>
-								<h1>{{ (currentTimeEntry.hours | fixedNumLength:2) || "00" }}</h1>
-							</li>
-							<li>
-								<ul><li><h5>Minutes</h5></li></ul>
-								<h1>{{ (currentTimeEntry.minutes | fixedNumLength:2) || "00" }}</h1>
-							</li>
-							<li>
-								<ul><li><h5>Seconds</h5></li></ul>
-								<h1>{{ (currentTimeEntry.seconds | fixedNumLength:2) || "00" }}</h1>
-							</li>
-						</ul>
-					</div>
+<ion-view view-title="Strumble">
+	<ion-nav-buttons side="secondary">
+		<button class="button button-icon icon ion-ios-more-outline" ng-click="openPopover($event)"></button>
+	</ion-nav-buttons>
+	<ion-content>
+		<div class="list">
+			<div class="card" style="padding: 0px;">
+				<ion-toggle toggle-class="toggle-positive" ng-model="timeEntryService.isTimerMode">Timer Mode</ion-toggle>
+				<label class="item item-input">
+					<span class="input-label">Client Name</span>
+					<input type="text" placeholder="...">
 				</label>
-				<div class="button-bar">
-					<button class="button" ng-class="timerService.isPlaying ? &apos;button-assertive icon ion-pause&apos; : &apos;button-positive icon ion-play&apos;" ng-click="toggleTimer()"></button>
-					<button class="button button-stable icon ion-trash-b" ng-click="resetTimer()"></button>
+				<div class="item" style="padding: 0px;" ng-show="timeEntryService.isTimerMode">
+					<label>
+						<div class="timer-display">
+							<ul>
+								<li>
+									<ul><li><h5>Units</h5></li></ul>
+									<h1>{{ (timeEntryService.timerMode.getTime().units | fixedNumLength:2) || "00" }}</h1>
+								</li>
+								<li>
+									<ul><li><h5>Hours</h5></li></ul>
+									<h1>{{ (timeEntryService.timerMode.getTime().hours | fixedNumLength:2) || "00" }}</h1>
+								</li>
+								<li>
+									<ul><li><h5>Minutes</h5></li></ul>
+									<h1>{{ (timeEntryService.timerMode.getTime().minutes | fixedNumLength:2) || "00" }}</h1>
+								</li>
+								<li>
+									<ul><li><h5>Seconds</h5></li></ul>
+									<h1>{{ (timeEntryService.timerMode.getTime().seconds | fixedNumLength:2) || "00" }}</h1>
+								</li>
+							</ul>
+						</div>
+					</label>
+					<div class="button-bar">
+						<button class="button" ng-class="timeEntryService.timerMode.isTimerPlaying ? 'button-assertive icon ion-pause' : 'button-positive icon ion-play'" ng-click="toggleTimer()"></button>
+						<button class="button button-dark icon ion-trash-b" ng-click="clearTimer()"></button>
+					</div>
+				</div>
+				<div class="item" style="padding: 0px;" ng-hide="timeEntryService.isTimerMode">
+					<label class="item-input">
+						<span class="input-label">Units</span>
+						<input type="number" placeholder="0" ng-model="timeEntryService.manualMode.units" />
+					</label>
 				</div>
 			</div>
-
-			<div ng-hide="currentTimeEntry.isTimerMode">
+			<div class="card">
+			<ion-item class="item-divider item-icon-right">What are you doing? <i class="icon ion-arrow-down-b"></i></ion-item>
 				<label class="item item-input">
-					<span class="input-label"><strong>Units</strong></span>
-					<input type="number" placeholder="0" ng-model="currentTimeEntry.units" />
+					<span class="input-label">Matter</span>
+					<input type="text" placeholder="..." ng-model="timeEntryService.matter" />
 				</label>
 				<label class="item item-input">
-					<span class="input-label">Hours</span>
-					<input type="number" placeholder="0" ng-model="currentTimeEntry.hours" />
+					<span class="input-label">Phase</span>
+					<input type="text" placeholder="..." ng-model="timeEntryService.phase" />
 				</label>
 				<label class="item item-input">
-					<span class="input-label">Minutes</span>
-					<input type="number" placeholder="0" ng-model="currentTimeEntry.minutes" />
-				</label>
-				<label class="item item-input">
-					<span class="input-label">Seconds</span>
-					<input type="number" placeholder="0" ng-model="currentTimeEntry.seconds" />
+					<span class="input-label">Narration</span>
+					<textarea placeholder="..." ng-model="timeEntryService.narration" rows="5" spellcheck="false"></textarea>
 				</label>
 			</div>
-		</div>
-
-		<div class="card">
-			<a class="item item-icon-right" ui-sref="{{ APP_STATES.moreInfo }}" >What are you doing? <i class="icon ion-ios-arrow-thin-right"></i></a>
 		</div>
 	</ion-content>
 
-	<div class="bar bar-footer bar-positive footer-button" ng-controller="SendController">
-		<button class="button button-full button-clear icon ion-ios-paperplane" ng-click="send(true)"> Send</button>
+	<div class="bar bar-footer bar-positive footer-button">
+		<button class="button button-full button-clear icon ion-ios-paperplane" ng-click="send()"> Send</button>
 	</div>
-</ion-pane>
+</ion-view>

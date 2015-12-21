@@ -1,173 +1,117 @@
-app.factory("AccumulatedTime", function () {
-	var self = this;
+(function () {
+	angular.module("strumble.services", [])
 
-	self.get = function () {
-		var accumulatedTime = window.localStorage["strumble.accumulatedTime"];
+	.factory("TimeEntries", function () {
 
-		if(accumulatedTime) {
-			return angular.fromJson(accumulatedTime);
-		}
+	})
+
+	.factory("TimeEntryService", function ($interval, Settings) {
+		var timer,
+			_milliseconds = 0; // used only in timerMode
 
 		return {
-			units: 0,
-			hours: 0,
-			minutes: 0,
-			seconds: 0
-		};
-	};
-
-	/**
-	 * @param {number} accumulatedTime.units
-	 * @param {number} accumulatedTime.hours
-	 * @param {number} accumulatedTime.minutes
-	 * @param {number} accumulatedTime.seconds
-	 */
-	self.add = function (currentAccumulatedTime) {
-		var tempAccumulatedTime = window.localStorage["strumble.accumulatedTime"],
-			accumulatedTime = {};
-
-		if(tempAccumulatedTime) {
-			tempAccumulatedTime = angular.fromJson(tempAccumulatedTime);
-		}
-		else {
-			tempAccumulatedTime = {
+			isTimerMode: false,
+			clientName: "",
+			matter: "",
+			phase: "",
+			narration: "",
+			manualMode: {
 				units: 0,
-				hours: 0,
-				minutes: 0,
-				seconds: 0
-			};
-		}
+				getTotalMillis: function () {
+					return (((this.units * 1000) * 60) * Settings.getMinutesPerUnit());
+				},
+				getTime: function () {
+					var hours,
+						minutes,
+						seconds,
+						milliseconds;
 
-		accumulatedTime = {
-			units: tempAccumulatedTime.units + currentAccumulatedTime.units,
-			hours: tempAccumulatedTime.hours + currentAccumulatedTime.hours,
-			minutes: tempAccumulatedTime.minutes + currentAccumulatedTime.minutes,
-			seconds: tempAccumulatedTime.seconds + currentAccumulatedTime.seconds,
-		};
+					milliseconds = (((this.units * 1000) * 60) * Settings.getMinutesPerUnit());
 
-		if(accumulatedTime.seconds >= 60) {
-			accumulatedTime.seconds -= 60;
-			accumulatedTime.minutes += 1;
-		}
+					seconds = Math.floor(milliseconds / 1000);
+					milliseconds = milliseconds % 1000;
 
-		if(accumulatedTime.minutes >= 60) {
-			accumulatedTime.minutes -= 60;
-			accumulatedTime.hours += 1;
-		}
+					minutes = Math.floor(seconds / 60);
+					seconds = seconds % 60;
 
-		window.localStorage["strumble.accumulatedTime"] = angular.toJson(accumulatedTime);
-	};
+					hours = Math.floor(minutes / 60);
+					minutes = minutes % 60;
 
-	return self;
-});
+					return {
+						units: this.units,
+						hours: hours,
+						minutes: minutes,
+						seconds: seconds,
+						milliseconds: milliseconds
+					};
+				}
+			},
+			timerMode: {
+				isTimerPlaying: false,
+				getTotalMillis: function () {
+					return _milliseconds;
+				},
+				getTime: function () {
+					var units,
+						hours,
+						minutes,
+						seconds,
+						milliseconds = _milliseconds;
 
-app.factory("TimeEntries", function () {
-	var self = this;
+					seconds = Math.floor(milliseconds / 1000);
+					milliseconds = milliseconds % 1000;
 
-	self.getAll = function () {
-		var timeEntries = window.localStorage["strumble.timeEntries"];
-		if(timeEntries) {
-			return angular.fromJson(timeEntries);
-		}
+					minutes = Math.floor(seconds / 60);
+					seconds = seconds % 60;
 
-		return [];
-	};
+					if(_milliseconds >= 1) {
+						units = Math.floor(minutes / Settings.getMinutesPerUnit()) + 1;
+					}
+					else {
+						units = 0;
+					}
 
-	self.get = function (timeEntryId) {
-		var timeEntries = angular.fromJson(window.localStorage["strumble.timeEntries"]),
-			timeEntry = {};
-		
-		if(timeEntries) {
-			for(var i = 0; i < timeEntries.length; i++) {
-				if(timeEntries[i].id == timeEntryId) {
-					timeEntry = timeEntries[i];
-					break;
+
+					hours = Math.floor(minutes / 60);
+					minutes = minutes % 60;
+
+					return {
+						units: units,
+						hours: hours,
+						minutes: minutes,
+						seconds: seconds,
+						milliseconds: milliseconds
+					};
+				},
+				start: function () {
+					var ctx = this;
+
+					timer = $interval(function () {
+						_milliseconds += 100;
+						console.log(ctx.getTime());
+					}, 100);
+				},
+				pause: function () {
+					$interval.cancel(timer);
+				},
+				clear: function () {
+					_milliseconds = 0;
 				}
 			}
-		}
+		};
+	})
 
-		return timeEntry;
-	}
+	.factory("Settings", function () {
+		var _minutesPerUnit = 6;
 
-	/**
-	 * @param {String} timeEntry.clientName
-	 * @param {String} timeEntry.matter
-	 * @param {String} timeEntry.phase
-	 * @param {String} timeEntry.narration
-	 * @param {String} timeEntry.hours
-	 * @param {String} timeEntry.minutes
-	 * @param {String} timeEntry.seconds
-	 * @param {String} timeEntry.status
-	 * @param {String} timeEntry.recipientEmail
-	 * @param {date} timeEntry.dateSent
-	 * @param {time} timeEntry.timeSent
-	 */
-	self.add = function (timeEntry) {
-		var timeEntries = window.localStorage["strumble.timeEntries"];
-
-		if(timeEntries) {
-			timeEntries = angular.fromJson(timeEntries);
-		}
-		else {
-			timeEntries = [];
-		}
-
-		timeEntries.push(timeEntry);
-		window.localStorage["strumble.timeEntries"] = angular.toJson(timeEntries);
-	};
-
-	return self;
-});
-
-app.factory("Settings", function () {
-	var self = this;
-
-	self.get = function () {
-		var settings = window.localStorage["strumble.settings"];
-		if(settings) {
-			return angular.fromJson(settings);
-		}
-
-		return {};
-	};
-
-	/**
-	 * @param {String} settings.recipientEmail
-	 * @param {String} settings.myEmail
-	 * @param {String} settings.myEmailPassword
-	 * @param {boolean} settings.timerModeAsDefault
-	 * @param {number} settings.minutesPerUnit
-	 */
-	self.set = function (settings) {
-		window.localStorage["strumble.settings"] = angular.toJson(settings);
-	};
-
-	return self;
-});
-
-app.factory("CurrentTimeEntry", function () {
-	return {};
-});
-
-app.factory("Timer", function () {
-	return {
-		isPlaying: false
-	};
-});
-
-app.factory("Email", function ($http) {
-	var self = this;
-	var mailingPath = "http://strumble.connxt.net/mail_api/";
-
-	self.send = function (timeEntryData) {
-		var config = {
-			headers: {
-				"Content-Type": "text/plain"
+		return {
+			getMinutesPerUnit: function () {
+				return _minutesPerUnit;
 			}
 		};
+	})
 
-		return $http.post(mailingPath, timeEntryData, config);
-	};
+	.factory("Email", function () {
 
-	return self;
-});
+	});
+})();

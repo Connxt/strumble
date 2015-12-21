@@ -4,8 +4,7 @@
 		"strumble.services",
 		"strumble.directives",
 		"strumble.filters",
-		"ionic",
-		"timer"
+		"ionic"
 	])
 
 	.run(function ($ionicPlatform) {

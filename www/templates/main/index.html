@@ -10,8 +10,9 @@
 					<span class="input-label">Client Name</span>
 					<input type="text" placeholder="...">
 				</label>
-				<div class="item" style="padding: 0px;" ng-show="timeEntryService.isTimerMode">
-					<label>
+				<ion-item style="padding: 0px;" ng-show="timeEntryService.isTimerMode">
+					<div id="timer" style="width: 100%;"></div>
+					<!-- <label>
 						<div class="timer-display">
 							<ul>
 								<li>
@@ -32,18 +33,18 @@
 								</li>
 							</ul>
 						</div>
-					</label>
+					</label> -->
 					<div class="button-bar">
 						<button class="button" ng-class="timeEntryService.timerMode.isTimerPlaying ? 'button-assertive icon ion-pause' : 'button-positive icon ion-play'" ng-click="toggleTimer()"></button>
 						<button class="button button-dark icon ion-trash-b" ng-click="clearTimer()"></button>
 					</div>
-				</div>
-				<div class="item" style="padding: 0px;" ng-hide="timeEntryService.isTimerMode">
+				</ion-item>
+				<ion-item style="padding: 0px;" ng-hide="timeEntryService.isTimerMode">
 					<label class="item-input">
 						<span class="input-label">Units</span>
 						<input type="number" placeholder="0" ng-model="timeEntryService.manualMode.units" />
 					</label>
-				</div>
+				</ion-item>
 			</div>
 			<div class="card">
 			<ion-item class="item-divider item-icon-right">What are you doing? <i class="icon ion-arrow-down-b"></i></ion-item>

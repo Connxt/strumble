@@ -15,6 +15,14 @@
 			$scope.popover.remove();
 		});
 
+		angular.element("#timer").TimeCircles({
+			time: {
+				Days: {
+					show: false
+				}
+			}
+		});
+
 		$scope.openPopover = function ($event) {
 			$scope.popover.show($event);
 		};
@@ -29,13 +37,24 @@
 		};
 
 		$scope.toggleTimer = function () {
+			// if(TimeEntryService.timerMode.isTimerPlaying) {
+			// 	TimeEntryService.timerMode.isTimerPlaying = false;
+			// 	TimeEntryService.timerMode.pause();
+			// }
+			// else {
+			// 	TimeEntryService.timerMode.isTimerPlaying = true;
+			// 	TimeEntryService.timerMode.start();
+			// }
 			if(TimeEntryService.timerMode.isTimerPlaying) {
 				TimeEntryService.timerMode.isTimerPlaying = false;
-				TimeEntryService.timerMode.pause();
+				// $timeCircle.start();
+				angular.element("#timer").TimeCircles().start();
 			}
 			else {
 				TimeEntryService.timerMode.isTimerPlaying = true;
-				TimeEntryService.timerMode.start();
+				// $timeCircle.stop();
+				angular.element("#timer").TimeCircles().stop();
+				// console.log($timeCircle.getTime());
 			}
 		};
 

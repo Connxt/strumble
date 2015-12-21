@@ -12,28 +12,6 @@
 				</label>
 				<ion-item style="padding: 0px;" ng-show="timeEntryService.isTimerMode">
 					<div id="timer" data-timer="0" style="width: 100%; margin-top: 20px; margin-bottom: 20px;"></div>
-					<!-- <label>
-						<div class="timer-display">
-							<ul>
-								<li>
-									<ul><li><h5>Units</h5></li></ul>
-									<h1>{{ (timeEntryService.timerMode.getTime().units | fixedNumLength:2) || "00" }}</h1>
-								</li>
-								<li>
-									<ul><li><h5>Hours</h5></li></ul>
-									<h1>{{ (timeEntryService.timerMode.getTime().hours | fixedNumLength:2) || "00" }}</h1>
-								</li>
-								<li>
-									<ul><li><h5>Minutes</h5></li></ul>
-									<h1>{{ (timeEntryService.timerMode.getTime().minutes | fixedNumLength:2) || "00" }}</h1>
-								</li>
-								<li>
-									<ul><li><h5>Seconds</h5></li></ul>
-									<h1>{{ (timeEntryService.timerMode.getTime().seconds | fixedNumLength:2) || "00" }}</h1>
-								</li>
-							</ul>
-						</div>
-					</label> -->
 					<div class="button-bar">
 						<button class="button" ng-class="timeEntryService.timerMode.isTimerPlaying ? 'button-assertive icon ion-pause' : 'button-positive icon ion-play'" ng-click="toggleTimer()"></button>
 						<button class="button button-dark icon ion-trash-b" ng-click="clearTimer()"></button>

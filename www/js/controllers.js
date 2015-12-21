@@ -83,5 +83,10 @@
 
 	.controller("SettingsController", function ($scope) {
 
+	})
+
+	.controller("TimeEntryListController", function ($scope, TimeEntries) {
+		$scope.timeEntries = TimeEntries.getAll();
+		console.log($scope.timeEntries);
 	});
 })();

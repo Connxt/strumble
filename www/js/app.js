@@ -39,7 +39,8 @@
 			url: "/settings",
 			views: {
 				"main": {
-					templateUrl: "templates/settings/index.html"
+					templateUrl: "templates/settings/index.html",
+					controller: "SettingsController"
 				}
 			}
 		})
@@ -47,7 +48,8 @@
 			url: "/time-entry-list",
 			views: {
 				"main": {
-					templateUrl: "templates/time-entry-list/index.html"
+					templateUrl: "templates/time-entry-list/index.html",
+					controller: "TimeEntryListController"
 				}
 			}
 		})
@@ -84,12 +86,4 @@
 		myDetails: {},
 		recipientEmails: [{}]
 	})
-
-	.constant("TIMER_LIMITS", {
-		units: 99,
-		hours: 99,
-		minutes: 60,
-		seconds: 60,
-		milliseconds: 1000
-	});
 })();

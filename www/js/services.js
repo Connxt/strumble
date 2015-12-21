@@ -1,14 +1,98 @@
 (function () {
 	angular.module("strumble.services", [])
 
-	.factory("TimeEntries", function () {
+	.factory("AccumulatedTime", function () {
+		return {
+			get: function () {
+				var accumulatedTime = window.localStorage["strumble.accumulatedTime"];
 
+				if(accumulatedTime) {
+					return angular.fromJson(accumulatedTime);
+				}
+
+				return {
+					units: 0,
+					milliseconds: 0
+				};
+			},
+			add: function (units, milliseconds) {
+				var accumulatedTime = window.localStorage["strumble.accumulatedTime"];
+
+				if(accumulatedTime) {
+					accumulatedTime = angular.fromJson(accumulatedTime);
+				}
+				else {
+					accumulatedTime = {
+						units: 0,
+						milliseconds: 0
+					};
+				}
+
+				window.localStorage["strumble.accumulatedTime"] = angular.toJson({
+					units: accumulatedTime.units + units,
+					milliseconds: accumulatedTime.milliseconds + milliseconds
+				});
+			}
+		}
+	})
+
+	.factory("TimeEntries", function () {
+		return {
+			getAll: function () {
+				var timeEntries = window.localStorage["strumble.timeEntries"];
+				if(timeEntries) {
+					return angular.fromJson(timeEntries);
+				}
+
+				return [];
+			},
+			get: function (timeEntryId) {
+				var timeEntries = angular.fromJson(window.localStorage["strumble.timeEntries"]),
+					timeEntry = {};
+				
+				if(timeEntries) {
+					for(var i = 0; i < timeEntries.length; i++) {
+						if(timeEntries[i].id == timeEntryId) {
+							timeEntry = timeEntries[i];
+							break;
+						}
+					}
+				}
+
+				return timeEntry;
+			},
+			add: function (timeEntryService) {
+				var timeEntries = window.localStorage["strumble.timeEntries"],
+					timeEntry = {};
+
+				if(timeEntries) {
+					timeEntries = angular.fromJson(timeEntries);
+				}
+				else {
+					timeEntries = [];
+				}
+
+				timeEntry = {
+					id: new Date(),
+					clientName: timeEntryService.clientName,
+					matter: timeEntryService.matter,
+					phase: timeEntryService.phase,
+					narration: timeEntryService.narration,
+					status: timeEntryService.status,
+					units: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.getTime().units : timeEntryService.manualMode.units,
+					milliseconds: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.milliseconds : timeEntryService.manualMode.getTime().getTotalMillis(),
+					recipientEmails: timeEntryService.recipientEmails,
+					dateSent: new Date()
+				};
+
+				timeEntries.push(timeEntry);
+				window.localStorage["strumble.timeEntries"] = angular.toJson(timeEntries);
+			}
+		};
 	})
 
 	.factory("TimeEntryService", function ($interval, Settings) {
 		var timer;
-		// var timer,
-		// 	this.milliseconds = 0; // used only in timerMode
 
 		return {
 			isTimerMode: false,
@@ -19,7 +103,7 @@
 			manualMode: {
 				units: 0,
 				getTotalMillis: function () {
-					return (((this.units * 1000) * 60) * Settings.getMinutesPerUnit());
+					return (((this.units * 1000) * 60) * Settings.minutesPerUnit);
 				},
 				getTime: function () {
 					var hours,
@@ -27,7 +111,7 @@
 						seconds,
 						milliseconds;
 
-					milliseconds = (((this.units * 1000) * 60) * Settings.getMinutesPerUnit());
+					milliseconds = (((this.units * 1000) * 60) * Settings.minutesPerUnit);
 
 					seconds = Math.floor(milliseconds / 1000);
 					milliseconds = milliseconds % 1000;
@@ -67,7 +151,7 @@
 					seconds = seconds % 60;
 
 					if(this.milliseconds >= 1) {
-						units = Math.floor(minutes / Settings.getMinutesPerUnit()) + 1;
+						units = Math.floor(minutes / Settings.minutesPerUnit) + 1;
 					}
 					else {
 						units = 0;
@@ -104,16 +188,57 @@
 	})
 
 	.factory("Settings", function () {
-		var _minutesPerUnit = 6;
 
 		return {
-			getMinutesPerUnit: function () {
-				return _minutesPerUnit;
+			get: function () {
+				var settings = window.localStorage["strumble.settings"];
+				if(settings) {
+					return angular.fromJson(settings);
+				}
+
+				return {};
+			},
+			set: function (settings) {
+				window.localStorage["strumble.settings"] = angular.toJson(settings);
 			}
-		};
+		}
+
+		// var _minutesPerUnit = 6;
+
+		// return {
+		// 	getMinutesPerUnit: function () {
+		// 		return _minutesPerUnit;
+		// 	}
+		// };
 	})
 
 	.factory("Email", function () {
+		var self = this;
+		var mailingPath = "http://strumble.connxt.net/mail_api/";
 
+		return {
+			send: function (timeEntryService) {
+				var config = {
+					headers: {
+						"Content-Type": "text/plain"
+					}
+				};
+
+				var timeEntry = {
+					id: new Date(),
+					clientName: timeEntryService.clientName,
+					matter: timeEntryService.matter,
+					phase: timeEntryService.phase,
+					narration: timeEntryService.narration,
+					status: timeEntryService.status,
+					units: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.getTime().units : timeEntryService.manualMode.units,
+					milliseconds: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.milliseconds : timeEntryService.manualMode.getTime().getTotalMillis(),
+					recipientEmails: timeEntryService.recipientEmails,
+					dateSent: new Date()
+				};
+
+				return $http.post(mailingPath, timeEntry, config);
+			}
+		};
 	});
 })();

@@ -1,7 +1,7 @@
 (function () {
 	angular.module("strumble.controllers", [])
 
-	.controller("MainController", function ($scope, $state, $ionicPopover, $ionicActionSheet, $ionicModal, TimeEntryService, Settings, APP_STATES) {
+	.controller("MainController", function ($scope, $state, $ionicPopover, $ionicActionSheet, $ionicModal, $ionicLoading, $ionicPopup, TimeEntryService, Settings, APP_STATES, TIME_ENTRY_STATUSES) {
 		$scope.appStates = APP_STATES
 		$scope.timeEntryService = TimeEntryService;
 
@@ -92,13 +92,13 @@
 				$timeCircle.stop();
 			}
 
-			if(! (settings.myDetails.name && settings.myDetails.email)) {
-				errors.push("My Details");
-			}
+			// if(! (settings.myDetails.name && settings.myDetails.email)) {
+			// 	errors.push("My Details");
+			// }
 
-			if(Object.keys(settings.recipientEmails[0]).length === 0) {
-				errors.push("Recipient Emails");
-			}
+			// if(Object.keys(settings.recipientEmails[0]).length === 0) {
+			// 	errors.push("Recipient Emails");
+			// }
 
 			if(errors.length >= 1) {
 				for(var i = 0; i < errors.length; i++) {
@@ -118,7 +118,7 @@
 					text: "Send as draft"
 				}];
 
-				if(withPreview) {
+				if(withPreviewOption) {
 					actionSheetButtons.push({ text: "Preview" });
 				}
 
@@ -130,70 +130,78 @@
 						var settings = Settings.get()
 
 						if(index == 0) {
-							$scope.currentTimeEntry.sentAs = TIME_ENTRY_STATUSES.final;
+							TimeEntryService.sentAs = TIME_ENTRY_STATUSES.final;
 						}
 						else if(index == 1) {
-							$scope.currentTimeEntry.sentAs = TIME_ENTRY_STATUSES.draft;
+							TimeEntryService.sentAs = TIME_ENTRY_STATUSES.draft;
 						}
 						else if(index == 2) {
-							$scope.preview();
+							$scope.openPreview();
 						}
 
 						if(index < 2) {
-							if(! $scope.currentTimeEntry.clientName) $scope.currentTimeEntry.clientName = "";
-							if(! $scope.currentTimeEntry.phase) $scope.currentTimeEntry.phase = "";
-							if(! $scope.currentTimeEntry.matter) $scope.currentTimeEntry.matter = "";
-							if(! $scope.currentTimeEntry.narration) $scope.currentTimeEntry.narration = "";
-							if(! $scope.currentTimeEntry.units) $scope.currentTimeEntry.units = 0;
-							if(! $scope.currentTimeEntry.hours) $scope.currentTimeEntry.hours = 0;
-							if(! $scope.currentTimeEntry.minutes) $scope.currentTimeEntry.minutes = 0;
-							if(! $scope.currentTimeEntry.seconds) $scope.currentTimeEntry.seconds = 0;
+							TimeEntryService.myDetails = settings.myDetails;
+							TimeEntryService.recipientEmails = settings.recipientEmails;
 
-							$scope.currentTimeEntry.myDetails = settings.myDetails;
-							$scope.currentTimeEntry.recipientEmails = settings.recipientEmails;
-							$scope.currentTimeEntry.dateSent = new Date();
-							$scope.currentTimeEntry.id = new Date();
 
-							$ionicLoading.show({ template: "Sending email..." });
+							$ionicLoading.show({ template: "<ion-spinner></ion-spinner>" });
+							setTimeout(function () {
+								$ionicLoading.hide();
+							}, 3000);
+							// if(! $scope.currentTimeEntry.clientName) $scope.currentTimeEntry.clientName = "";
+							// if(! $scope.currentTimeEntry.phase) $scope.currentTimeEntry.phase = "";
+							// if(! $scope.currentTimeEntry.matter) $scope.currentTimeEntry.matter = "";
+							// if(! $scope.currentTimeEntry.narration) $scope.currentTimeEntry.narration = "";
+							// if(! $scope.currentTimeEntry.units) $scope.currentTimeEntry.units = 0;
+							// if(! $scope.currentTimeEntry.hours) $scope.currentTimeEntry.hours = 0;
+							// if(! $scope.currentTimeEntry.minutes) $scope.currentTimeEntry.minutes = 0;
+							// if(! $scope.currentTimeEntry.seconds) $scope.currentTimeEntry.seconds = 0;
 
-							Email.send($scope.currentTimeEntry).success(function (data, status, headers, config) {
-								TimeEntries.add($scope.currentTimeEntry);
-								AccumulatedTime.add({
-									units: $scope.currentTimeEntry.units,
-									hours: $scope.currentTimeEntry.hours,
-									minutes: $scope.currentTimeEntry.minutes,
-									seconds: $scope.currentTimeEntry.seconds,
-								});
+							// $scope.currentTimeEntry.myDetails = settings.myDetails;
+							// $scope.currentTimeEntry.recipientEmails = settings.recipientEmails;
+							// $scope.currentTimeEntry.dateSent = new Date();
+							// $scope.currentTimeEntry.id = new Date();
+
+							// $ionicLoading.show({ template: "Sending email..." });
+
+							// Email.send($scope.currentTimeEntry).success(function (data, status, headers, config) {
+							// 	TimeEntries.add($scope.currentTimeEntry);
+							// 	AccumulatedTime.add({
+							// 		units: $scope.currentTimeEntry.units,
+							// 		hours: $scope.currentTimeEntry.hours,
+							// 		minutes: $scope.currentTimeEntry.minutes,
+							// 		seconds: $scope.currentTimeEntry.seconds,
+							// 	});
 								
-								// resets the CurrentTimeEntry
-								CurrentTimeEntry.clientName = "";
-								CurrentTimeEntry.matter = "";
-								CurrentTimeEntry.phase = "";
-								CurrentTimeEntry.narration = "";
-								CurrentTimeEntry.units = "";
-								CurrentTimeEntry.hours = "";
-								CurrentTimeEntry.minutes = "";
-								CurrentTimeEntry.seconds = "";
-								CurrentTimeEntry.milliseconds = "";
+							// 	// resets the CurrentTimeEntry
+							// 	CurrentTimeEntry.clientName = "";
+							// 	CurrentTimeEntry.matter = "";
+							// 	CurrentTimeEntry.phase = "";
+							// 	CurrentTimeEntry.narration = "";
+							// 	CurrentTimeEntry.units = "";
+							// 	CurrentTimeEntry.hours = "";
+							// 	CurrentTimeEntry.minutes = "";
+							// 	CurrentTimeEntry.seconds = "";
+							// 	CurrentTimeEntry.milliseconds = "";
 
-								delete CurrentTimeEntry.recipientEmail;
-								delete CurrentTimeEntry.dateSent;
+							// 	delete CurrentTimeEntry.recipientEmail;
+							// 	delete CurrentTimeEntry.dateSent;
 
-								$scope.previewModal.hide();
-								$state.go(APP_STATES.main);
+							// 	$scope.previewModal.hide();
+							// 	$state.go(APP_STATES.main);
 
-								$ionicLoading.hide();
-								$ionicPopup.alert({
-									title: "Success!",
-									template: "Time entry has been saved and sent successfully."
-								});
-							}).error(function (data, status, headers, config) {
-								$ionicLoading.hide();
-								$ionicPopup.alert({
-									title: "Sending Failed",
-									template: "An unknown error occured. <p><i class='ion-ios-checkmark-empty'></i> Make sure you have a stable internet connection.</p>"
-								});
-							});
+							// 	$ionicLoading.hide();
+							// 	$ionicPopup.alert({
+							// 		title: "Success!",
+							// 		template: "Time entry has been saved and sent successfully."
+							// 	});
+							// }).error(function (data, status, headers, config) {
+							// 	$ionicLoading.hide();
+							// 	$ionicPopup.alert({
+							// 		title: "Sending Failed",
+							// 		template: "An unknown error occured. <p><i class='ion-ios-checkmark-empty'></i> Make sure you have a stable internet connection.</p>"
+							// 	});
+							// });
 						}
 
 						return true;
@@ -203,12 +211,38 @@
 		};
 	})
 
-	.controller("SettingsController", function ($scope, Settings) {
+	.controller("SettingsController", function ($scope, $ionicPopup, Settings) {
 		$scope.settings = Settings.get();
 		$scope.tempSettings = Settings.get();
 
 		$scope.setMyDetails = function () {
+			$scope.tempSettings = Settings.get();
 
+			$ionicPopup.show({
+				templateUrl: "templates/settings/set-my-details.html",
+				title: "Enter Your Mailing Details",
+				subTitle: "Please enter your correct information.",
+				scope: $scope,
+				buttons: [{
+					text: "Cancel"
+				}, {
+					text: "Save",
+					type: "button-positive",
+					onTap: function (e) {
+						if(! ($scope.tempSettings.myDetails.name && $scope.tempSettings.myDetails.email)) {
+							e.preventDefault();
+						}
+						else {
+							return true;
+						}
+					}
+				}]
+			}).then(function (result) {
+				if(result) {
+					Settings.set($scope.tempSettings);
+					$scope.settings = Settings.get();
+				}
+			});
 		};
 
 		$scope.setRecipientEmails = function () {

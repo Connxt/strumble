@@ -36,7 +36,7 @@
 		}
 	})
 
-	.factory("TimeEntries", function () {
+	.factory("TimeEntries", function (AccumulatedTime) {
 		return {
 			getAll: function () {
 				var timeEntries = window.localStorage["strumble.timeEntries"];
@@ -78,12 +78,14 @@
 					matter: timeEntryService.matter,
 					phase: timeEntryService.phase,
 					narration: timeEntryService.narration,
-					status: timeEntryService.status,
+					sentAs: timeEntryService.sentAs,
 					units: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.getTime().units : timeEntryService.manualMode.units,
 					milliseconds: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.milliseconds : timeEntryService.manualMode.getTime().getTotalMillis(),
 					recipientEmails: timeEntryService.recipientEmails,
 					dateSent: new Date()
 				};
+
+				AccumulatedTime.add(timeEntry.units, timeEntry.milliseconds);
 
 				timeEntries.push(timeEntry);
 				window.localStorage["strumble.timeEntries"] = angular.toJson(timeEntries);
@@ -202,14 +204,6 @@
 				window.localStorage["strumble.settings"] = angular.toJson(settings);
 			}
 		}
-
-		// var _minutesPerUnit = 6;
-
-		// return {
-		// 	getMinutesPerUnit: function () {
-		// 		return _minutesPerUnit;
-		// 	}
-		// };
 	})
 
 	.factory("Email", function () {
@@ -230,7 +224,7 @@
 					matter: timeEntryService.matter,
 					phase: timeEntryService.phase,
 					narration: timeEntryService.narration,
-					status: timeEntryService.status,
+					sentAs: timeEntryService.sentAs,
 					units: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.getTime().units : timeEntryService.manualMode.units,
 					milliseconds: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.milliseconds : timeEntryService.manualMode.getTime().getTotalMillis(),
 					recipientEmails: timeEntryService.recipientEmails,

@@ -7,7 +7,7 @@
 		"ionic"
 	])
 
-	.run(function ($ionicPlatform) {
+	.run(function ($ionicPlatform, Settings) {
 		$ionicPlatform.ready(function () {
 			if(window.cordova && window.cordova.plugins.Keyboard) {
 				cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -17,6 +17,17 @@
 				StatusBar.styleDefault();
 			}
 		});
+
+
+		// if there are no settings saved
+		if(Object.keys(Settings.get()).length <= 0) {
+			Settings.set({
+				timerModeAsDefault: true,
+				minutesPerUnit: 6,
+				myDetails: {},
+				recipientEmails: [{}]
+			});
+		}
 	})
 
 	.config(function ($stateProvider, $urlRouterProvider, APP_STATES) {
@@ -78,12 +89,5 @@
 	.constant("TIME_ENTRY_STATUSES", {
 		draft: "Draft",
 		final: "Final"
-	})
-
-	.constant("DEFAULT_SETTINGS", {
-		timerModeAsDefault: true,
-		minutesPerUnit: 6,
-		myDetails: {},
-		recipientEmails: [{}]
 	})
 })();

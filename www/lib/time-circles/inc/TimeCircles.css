@@ -22,7 +22,7 @@
  **/
 .time_circles > div > h4 {
     margin: 0px;
-    padding-top: 2px 0px 0px 0px;
+    padding: 2px 0px 0px 0px;
     text-align: center;
     text-transform: uppercase;
     font-family: 'Century Gothic', Arial;

@@ -32,7 +32,7 @@
 				}
 			},
 			fg_width: 0.040,
-			text_size: 0.098,
+			text_size: 0.080,
 			circle_bg_color: "#D2D6E1"
 		});
 

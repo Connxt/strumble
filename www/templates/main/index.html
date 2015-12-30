@@ -25,16 +25,16 @@
 				</ion-item>
 			</div>
 			<div class="card">
-			<ion-item class="item-divider item-icon-right">What are you doing? <i class="icon ion-arrow-down-b"></i></ion-item>
-				<label class="item item-input">
+				<ion-item class="item-icon-right" ng-class="{ active: isMoreInfoShown }" ng-click="toggleMoreInfo()">What are you doing? <i class="icon" ng-class="isMoreInfoShown ? 'ion-arrow-down-b' : 'ion-arrow-up-b'"></i></ion-item>
+				<label ng-show="isMoreInfoShown" class="item item-input">
 					<span class="input-label">Matter</span>
 					<input type="text" placeholder="..." ng-model="timeEntryService.matter" />
 				</label>
-				<label class="item item-input">
+				<label ng-show="isMoreInfoShown" class="item item-input">
 					<span class="input-label">Phase</span>
 					<input type="text" placeholder="..." ng-model="timeEntryService.phase" />
 				</label>
-				<label class="item item-input">
+				<label ng-show="isMoreInfoShown" class="item item-input">
 					<span class="input-label">Narration</span>
 					<textarea placeholder="..." ng-model="timeEntryService.narration" rows="5" spellcheck="false"></textarea>
 				</label>

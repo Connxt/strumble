@@ -74,7 +74,7 @@
 			TimeEntryService.timerMode.isTimerPlaying = false;
 		};
 
-		$scope.isMoreInfoShown = false;
+		$scope.isMoreInfoShown = true;
 		$scope.toggleMoreInfo = function () {
 			if($scope.isMoreInfoShown) {
 				$scope.isMoreInfoShown = false;	

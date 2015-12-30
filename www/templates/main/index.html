@@ -8,7 +8,7 @@
 				<ion-toggle toggle-class="toggle-positive" ng-model="timeEntryService.isTimerMode">Timer Mode</ion-toggle>
 				<label class="item item-input">
 					<span class="input-label">Client Name</span>
-					<input type="text" placeholder="...">
+					<input type="text" placeholder="..." ng-model="timeEntryService.clientName">
 				</label>
 				<ion-item style="padding: 0px;" ng-show="timeEntryService.isTimerMode">
 					<div id="timer" data-timer="0" style="width: 100%; margin-top: 20px; margin-bottom: 20px;"></div>
@@ -43,7 +43,7 @@
 	</ion-content>
 	<ion-footer-bar class="bar-positive">
   		<div class="bar bar-footer bar-positive footer-button">
-			<button class="button button-full button-clear icon ion-ios-paperplane" ng-click="send()"> Send</button>
+			<button class="button button-full button-clear icon ion-ios-paperplane" ng-click="send(true)"> Send</button>
 		</div>
 	</ion-footer-bar>
 </ion-view>

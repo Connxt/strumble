@@ -1,17 +1,30 @@
 (function () {
 	angular.module("strumble.services", [])
 
-	.factory("AccumulatedTime", function () {
+	.factory("AccumulatedTime", function (TimeUtility) {
 		return {
 			get: function () {
-				var accumulatedTime = window.localStorage["strumble.accumulatedTime"];
+				var tempAccumulatedTime = window.localStorage["strumble.accumulatedTime"];
 
-				if(accumulatedTime) {
-					return angular.fromJson(accumulatedTime);
+				if(tempAccumulatedTime) {
+					tempAccumulatedTime = angular.fromJson(tempAccumulatedTime);
+
+					return {
+						units: tempAccumulatedTime.units,
+						totalMilliseconds: tempAccumulatedTime.totalMilliseconds,
+						hours: TimeUtility.toTime(tempAccumulatedTime.totalMilliseconds).hours,
+						minutes: TimeUtility.toTime(tempAccumulatedTime.totalMilliseconds).minutes,
+						seconds: TimeUtility.toTime(tempAccumulatedTime.totalMilliseconds).seconds,
+						milliseconds: TimeUtility.toTime(tempAccumulatedTime.totalMilliseconds).milliseconds
+					};
 				}
 
 				return {
 					units: 0,
+					totalMilliseconds: 0,
+					hours: 0,
+					minutes: 0,
+					seconds: 0,
 					milliseconds: 0
 				};
 			},
@@ -24,19 +37,19 @@
 				else {
 					accumulatedTime = {
 						units: 0,
-						milliseconds: 0
+						totalMilliseconds: 0
 					};
 				}
 
 				window.localStorage["strumble.accumulatedTime"] = angular.toJson({
 					units: accumulatedTime.units + units,
-					milliseconds: accumulatedTime.milliseconds + milliseconds
+					totalMilliseconds: accumulatedTime.totalMilliseconds + milliseconds
 				});
 			}
 		}
 	})
 
-	.factory("TimeEntries", function (AccumulatedTime) {
+	.factory("TimeEntries", function (AccumulatedTime, Email) {
 		return {
 			getAll: function () {
 				var timeEntries = window.localStorage["strumble.timeEntries"];
@@ -62,8 +75,7 @@
 				return timeEntry;
 			},
 			add: function (timeEntryService) {
-				var timeEntries = window.localStorage["strumble.timeEntries"],
-					timeEntry = {};
+				var timeEntries = window.localStorage["strumble.timeEntries"];
 
 				if(timeEntries) {
 					timeEntries = angular.fromJson(timeEntries);
@@ -72,17 +84,19 @@
 					timeEntries = [];
 				}
 
-				timeEntry = {
-					id: new Date(),
+				var timeEntry = {
+					id: new Date().getTime(),
 					clientName: timeEntryService.clientName,
 					matter: timeEntryService.matter,
 					phase: timeEntryService.phase,
 					narration: timeEntryService.narration,
 					sentAs: timeEntryService.sentAs,
-					units: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.getTime().units : timeEntryService.manualMode.units,
-					milliseconds: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.milliseconds : timeEntryService.manualMode.getTime().getTotalMillis(),
+					units: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.getTime().units : (!timeEntryService.manualMode.units || isNaN(timeEntryService.manualMode.units) || timeEntryService.manualMode.units < 1) ? 0 : parseInt(timeEntryService.manualMode.units),
+					milliseconds: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.milliseconds : timeEntryService.manualMode.getTotalMillis(),
 					recipientEmails: timeEntryService.recipientEmails,
-					dateSent: new Date()
+					dateSent: new Date(),
+					myDetails: timeEntryService.myDetails,
+					recipientEmails: timeEntryService.recipientEmails
 				};
 
 				AccumulatedTime.add(timeEntry.units, timeEntry.milliseconds);
@@ -93,7 +107,7 @@
 		};
 	})
 
-	.factory("TimeEntryService", function ($interval, Settings) {
+	.factory("TimeEntryService", function ($interval, Settings, TimeUtility) {
 		var timer;
 
 		return {
@@ -103,33 +117,41 @@
 			phase: "",
 			narration: "",
 			manualMode: {
-				units: 0,
+				units: "",
 				getTotalMillis: function () {
-					return (((this.units * 1000) * 60) * Settings.minutesPerUnit);
+					var units;
+
+					if(!this.units || isNaN(this.units)) {
+						units = 0;
+					}
+					else {
+						units = parseInt(this.units);
+					}
+
+					return (((units * 1000) * 60) * Settings.get().minutesPerUnit);
 				},
 				getTime: function () {
-					var hours,
+					var units,
+						hours,
 						minutes,
 						seconds,
 						milliseconds;
 
-					milliseconds = (((this.units * 1000) * 60) * Settings.minutesPerUnit);
+					if(!this.units || isNaN(this.units) || this.units < 1) {
+						units = 0;
+					}
+					else {
+						units = parseInt(this.units);
+					}
 
-					seconds = Math.floor(milliseconds / 1000);
-					milliseconds = milliseconds % 1000;
-
-					minutes = Math.floor(seconds / 60);
-					seconds = seconds % 60;
-
-					hours = Math.floor(minutes / 60);
-					minutes = minutes % 60;
+					milliseconds = (((units * 1000) * 60) * Settings.get().minutesPerUnit);
 
 					return {
-						units: this.units,
-						hours: hours,
-						minutes: minutes,
-						seconds: seconds,
-						milliseconds: milliseconds
+						units: units,
+						hours: TimeUtility.toTime(milliseconds).hours,
+						minutes: TimeUtility.toTime(milliseconds).minutes,
+						seconds: TimeUtility.toTime(milliseconds).seconds,
+						milliseconds: TimeUtility.toTime(milliseconds).milliseconds
 					};
 				}
 			},
@@ -146,29 +168,19 @@
 						seconds,
 						milliseconds = this.milliseconds;
 
-					seconds = Math.floor(milliseconds / 1000);
-					milliseconds = milliseconds % 1000;
-
-					minutes = Math.floor(seconds / 60);
-					seconds = seconds % 60;
-
 					if(this.milliseconds >= 1) {
-						units = Math.floor(minutes / Settings.minutesPerUnit) + 1;
+						units = Math.floor(TimeUtility.toTime(milliseconds).minutes / Settings.get().minutesPerUnit) + 1;
 					}
 					else {
 						units = 0;
 					}
 
-
-					hours = Math.floor(minutes / 60);
-					minutes = minutes % 60;
-
 					return {
 						units: units,
-						hours: hours,
-						minutes: minutes,
-						seconds: seconds,
-						milliseconds: milliseconds
+						hours: TimeUtility.toTime(milliseconds).hours,
+						minutes: TimeUtility.toTime(milliseconds).minutes,
+						seconds: TimeUtility.toTime(milliseconds).seconds,
+						milliseconds: TimeUtility.toTime(milliseconds).milliseconds
 					};
 				},
 				start: function () {
@@ -189,8 +201,31 @@
 		};
 	})
 
-	.factory("Settings", function () {
+	.factory("TimeUtility", function () {
+		return {
+			toTime: function (totalMilliseconds) {
+				var milliseconds = totalMilliseconds;
 
+				var seconds = Math.floor(milliseconds / 1000);
+				milliseconds = milliseconds % 1000;
+
+				var minutes = Math.floor(seconds / 60);
+				seconds = seconds % 60;
+
+				var hours = Math.floor(minutes / 60);
+				minutes = minutes % 60;
+
+				return {
+					hours: hours,
+					minutes: minutes,
+					seconds: seconds,
+					milliseconds: milliseconds
+				};
+			}
+		}
+	})
+
+	.factory("Settings", function () {
 		return {
 			get: function () {
 				var settings = window.localStorage["strumble.settings"];
@@ -206,29 +241,33 @@
 		}
 	})
 
-	.factory("Email", function () {
+	.factory("Email", function ($http) {
 		var self = this;
 		var mailingPath = "http://strumble.connxt.net/mail_api/";
 
 		return {
 			send: function (timeEntryService) {
 				var config = {
-					headers: {
-						"Content-Type": "text/plain"
-					}
-				};
+						headers: {
+							"Content-Type": "text/plain"
+						}
+					};
 
 				var timeEntry = {
-					id: new Date(),
 					clientName: timeEntryService.clientName,
 					matter: timeEntryService.matter,
 					phase: timeEntryService.phase,
 					narration: timeEntryService.narration,
 					sentAs: timeEntryService.sentAs,
-					units: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.getTime().units : timeEntryService.manualMode.units,
-					milliseconds: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.milliseconds : timeEntryService.manualMode.getTime().getTotalMillis(),
+					units: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.getTime().units : (!timeEntryService.manualMode.units || isNaN(timeEntryService.manualMode.units) || timeEntryService.manualMode.units < 1) ? 0 : parseInt(timeEntryService.manualMode.units),
+					hours: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.getTime().hours : timeEntryService.manualMode.getTime().hours,
+					minutes: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.getTime().minutes : timeEntryService.manualMode.getTime().minutes,
+					seconds: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.getTime().seconds : timeEntryService.manualMode.getTime().seconds,
+					milliseconds: (timeEntryService.isTimerMode) ? timeEntryService.timerMode.milliseconds : timeEntryService.manualMode.getTotalMillis(),
 					recipientEmails: timeEntryService.recipientEmails,
-					dateSent: new Date()
+					dateSent: new Date(),
+					myDetails: timeEntryService.myDetails,
+					recipientEmails: timeEntryService.recipientEmails
 				};
 
 				return $http.post(mailingPath, timeEntry, config);

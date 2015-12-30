@@ -1,5 +1,28 @@
 <ion-view view-title="Time Entries">
-	<ion-content>
-		
+	<ion-content ng-controller="TimeEntryListController">
+		<div class="card" ng-show="!timeEntries.length">
+			<div class="item item-text-wrap"><h2>No Time Entries Yet!</h2></div>
+		</div>
+
+		<div class="list card" ng-show="timeEntries.length">
+			<div class="item">
+				<h2>
+					<strong>Accumulated Time:</strong>
+					{{ accumulatedTime.get().units + " " + ((accumulatedTime.get().units > 1) ? "units" : "unit") }}
+					({{ (accumulatedTime.get().hours | fixedNumLength:2) + ":" + (accumulatedTime.get().minutes | fixedNumLength:2)  + ":" + (accumulatedTime.get().seconds | fixedNumLength:2) }})
+				</h2>
+			</div>
+			<a class="item item-icon-right" ng-repeat="timeEntry in timeEntries | orderBy: '-dateSent'" href="#/app/time-entry-list/{{ timeEntry.id }}">
+				<h2><strong>{{ timeEntry.clientName || "..." }}</strong> - <strong ng-class="(timeEntry.sentAs == TIME_ENTRY_STATUSES.final) ? 'balanced' : 'energized'">{{ timeEntry.sentAs }}</strong></h2>
+				<span class="item-note">{{ timeEntry.dateSent | date:"MM/dd/yyyy" }}</span>
+				<h3>
+					<strong>Length:</strong>
+					{{ timeEntry.units + " " + ((timeEntry.units > 1) ? "units" : "unit") }}
+					({{ (timeUtility.toTime(timeEntry.milliseconds).hours | fixedNumLength:2) + ":" + (timeUtility.toTime(timeEntry.milliseconds).minutes | fixedNumLength:2)  + ":" + (timeUtility.toTime(timeEntry.milliseconds).seconds | fixedNumLength:2) }})
+				</h3>
+				<h3><strong>Matter:</strong> {{ timeEntry.matter || "..." }}</h3>
+				<i class="icon ion-chevron-right icon-accessory"></i>
+			</a>
+		</div>
 	</ion-content>
 </ion-view>

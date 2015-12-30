@@ -4,7 +4,8 @@
 		"strumble.services",
 		"strumble.directives",
 		"strumble.filters",
-		"ionic"
+		"ionic",
+		"ngResource"
 	])
 
 	.run(function ($ionicPlatform, Settings) {
@@ -66,10 +67,11 @@
 			}
 		})
 		.state(APP_STATES.timeEntryDetails, {
-			url: "/time-entry-details/:timeEntryId",
+			url: "/time-entry-list/:timeEntryId",
 			views: {
 				"main": {
-					templateUrl: "templates/time-entry-list/detail.html"
+					templateUrl: "templates/time-entry-list/detail.html",
+					controller: "TimeEntryDetailController"
 				}
 			}
 		});

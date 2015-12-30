@@ -1,5 +1,23 @@
 <ion-view view-title="Details">
 	<ion-content>
-		
+		<div class="list card wrapping-list">
+			<ion-item><strong>Client Name:</strong> {{ timeEntry.clientName  || "..."  }}</ion-item>
+			<ion-item><strong>Sent As:</strong> <strong ng-class="(timeEntry.sentAs == TIME_ENTRY_STATUSES.final) ? 'balanced' : 'energized'">{{ timeEntry.sentAs }}</strong></ion-item>
+			<ion-item>
+				<strong>Recipient Emails:</strong>
+				<span ng-repeat="email in timeEntry.recipientEmails"> {{ email.value }}
+					<span ng-if="$index < timeEntry.recipientEmails.length - 1">, </span>
+				</span>
+			</ion-item>
+			<ion-item><strong>Date Sent:</strong> {{ timeEntry.dateSent | date:"MM/dd/yyyy" }}</ion-item>
+			<ion-item>
+				<strong>Length:</strong>
+				{{ timeEntry.units + " " + ((timeEntry.units > 1) ? "units" : "unit") }}
+				({{ (timeUtility.toTime(timeEntry.milliseconds).hours | fixedNumLength:2) + ":" + (timeUtility.toTime(timeEntry.milliseconds).minutes | fixedNumLength:2)  + ":" + (timeUtility.toTime(timeEntry.milliseconds).seconds | fixedNumLength:2) }})
+			</ion-item>
+			<ion-item><strong>Matter:</strong> {{ timeEntry.matter  || "..."  }}</ion-item>
+			<ion-item><strong>Phase:</strong> {{ timeEntry.phase  || "..."  }}</ion-item>
+			<ion-item><strong>Narration:</strong> {{ timeEntry.narration  || "..."  }}</ion-item>
+		</div>
 	</ion-content>
 </ion-view>

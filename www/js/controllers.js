@@ -42,7 +42,7 @@
 			fg_width: 0.040,
 			text_size: 0.080,
 			circle_bg_color: "#D2D6E1"
-		});
+		}).restart().stop();
 
 		$timeCircle.addListener(function () {
 			TimeEntryService.timerMode.milliseconds = ($timeCircle.getTime() * -1) * 1000;

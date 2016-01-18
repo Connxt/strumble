@@ -6,15 +6,15 @@
 	</ion-header-bar>
 	<ion-content>
 		<div class="list card wrapping-list">
-			<ion-item><strong>Client Name:</strong> {{ timeEntry.clientName || "..." }}</ion-item>
+			<ion-item><strong>Client Name:</strong> {{ timeEntryService.clientName || "..." }}</ion-item>
 			<ion-item><strong>Length:</strong> 
 				{{ (timeEntryService.isTimerMode) ? timeEntryService.timerMode.getTime().units : (!timeEntryService.manualMode.units || isNaN(timeEntryService.manualMode.units) ? 0 : timeEntryService.manualMode.units) }}
 				{{ (timeEntryService.isTimerMode) ? (timeEntryService.timerMode.getTime().units > 1 ? "units" : "unit") : (!timeEntryService.manualMode.units || isNaN(timeEntryService.manualMode.units) ? "unit" : (timeEntryService.manualMode.units > 1 ? "units" : "unit")) }}
 				({{ (timeEntryService.isTimerMode) ? ((timeEntryService.timerMode.getTime().hours || 00) | fixedNumLength:2) + ":" + ((timeEntryService.timerMode.getTime().minutes || 00) | fixedNumLength:2) + ":" + ((timeEntryService.timerMode.getTime().seconds || 00) | fixedNumLength:2) : ((timeEntryService.manualMode.getTime().hours || 00) | fixedNumLength:2) + ":" + ((timeEntryService.manualMode.getTime().minutes || 00) | fixedNumLength:2) + ":" + ((timeEntryService.manualMode.getTime().seconds || 00) | fixedNumLength:2) }})
 			</ion-item>
-			<ion-item><strong>Matter:</strong> {{ timeEntry.matter || "..." }}</ion-item>
-			<ion-item><strong>Phase:</strong> {{ timeEntry.phase || "..." }}</ion-item>
-			<ion-item><strong>Narration:</strong> {{ timeEntry.narration || "..." }}</ion-item>
+			<ion-item><strong>Matter:</strong> {{ timeEntryService.matter || "..." }}</ion-item>
+			<ion-item><strong>Phase:</strong> {{ timeEntryService.phase || "..." }}</ion-item>
+			<ion-item><strong>Narration:</strong> {{ timeEntryService.narration || "..." }}</ion-item>
 		</div>
 	</ion-content>
 </ion-modal-view>

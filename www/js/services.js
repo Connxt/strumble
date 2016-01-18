@@ -50,9 +50,10 @@
 	})
 
 	.factory("TimeEntries", function (AccumulatedTime, Email) {
+		var timeEntries = window.localStorage["strumble.timeEntries"];
+
 		return {
 			getAll: function () {
-				var timeEntries = window.localStorage["strumble.timeEntries"];
 				if(timeEntries) {
 					return angular.fromJson(timeEntries);
 				}
@@ -60,10 +61,11 @@
 				return [];
 			},
 			get: function (timeEntryId) {
-				var timeEntries = angular.fromJson(window.localStorage["strumble.timeEntries"]),
-					timeEntry = {};
+				var timeEntry = {};
 				
 				if(timeEntries) {
+					timeEntries = angular.fromJson(timeEntries);
+
 					for(var i = 0; i < timeEntries.length; i++) {
 						if(timeEntries[i].id == timeEntryId) {
 							timeEntry = timeEntries[i];
@@ -75,8 +77,6 @@
 				return timeEntry;
 			},
 			add: function (timeEntryService) {
-				var timeEntries = window.localStorage["strumble.timeEntries"];
-
 				if(timeEntries) {
 					timeEntries = angular.fromJson(timeEntries);
 				}
@@ -103,6 +103,7 @@
 
 				timeEntries.push(timeEntry);
 				window.localStorage["strumble.timeEntries"] = angular.toJson(timeEntries);
+				timeEntries = window.localStorage["strumble.timeEntries"];
 			}
 		};
 	})
